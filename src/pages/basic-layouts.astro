@@ -1,0 +1,229 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import Footer from '../components/Footer.astro';
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+import FeatureItem from '../components/FeatureItem.astro';
+import Accordion from '../components/Accordion.astro';
+import MediaImage from '../components/MediaImage.astro';
+
+const introLong =
+	'Lorem ipsum dolor sit amet consectetur adipiscing elit enim porttitor, ornare luctus dignissim posuere platea aliquam turpis taciti fusce, diam arcu mollis phasellus mattis ad suspendisse integer.';
+
+const introShort =
+	'Lorem ipsum dolor sit amet consectetur adipiscing elit, posuere bibendum per congue conubia justo laoreet, habitasse auctor vel pellentesque sapien aptent.';
+
+const featureCopy = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+
+const faqs = [
+	{
+		q: 'Lorem ipsum?',
+		a: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+	},
+	{
+		q: 'Lorem ipsum?',
+		a: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+	},
+	{
+		q: 'Lorem ipsum?',
+		a: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+	},
+];
+
+const placeholder =
+	'data:image/svg+xml,' +
+	encodeURIComponent(
+		'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><rect fill="#e8e6de" width="1200" height="800"/><text x="600" y="410" text-anchor="middle" fill="#474641" font-family="system-ui" font-size="32">Image</text></svg>',
+	);
+---
+
+<Layout title="Basic Layouts — Astro Starter">
+	<SiteNav />
+
+	<main id="main" tabindex="-1">
+		<!-- Hero: centred intro -->
+		<Section spacing="lg">
+			<div class="container-page">
+				<div class="mx-auto max-w-3xl space-y-6 text-center">
+					<p class="text-eyebrow uppercase tracking-wide text-brand">Lorem ipsum</p>
+					<h1>A simple header</h1>
+					<p class="text-body-lg text-ink-soft">{introLong}</p>
+					<div class="flex flex-wrap justify-center gap-3 pt-2">
+						<Button href="#">Button</Button>
+						<Button variant="secondary" href="#">Button</Button>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Split: copy + image -->
+		<Section theme="paper">
+			<div class="container-page">
+				<div class="grid grid-cols-12 items-center gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-6 lg:col-span-5">
+						<p class="text-eyebrow uppercase tracking-wide text-brand">Lorem ipsum</p>
+						<h2>Another header</h2>
+						<p class="text-body-lg text-ink-soft">{introLong}</p>
+						<div class="flex flex-wrap gap-3">
+							<Button href="#">Button</Button>
+							<Button variant="secondary" href="#">Button</Button>
+						</div>
+					</div>
+					<div class="col-span-12 lg:col-span-7">
+						<MediaImage
+							src={placeholder}
+							alt="Placeholder illustration"
+							ratio="16x9"
+							class="shadow-sm"
+						/>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Centred intro + 4-column features -->
+		<Section>
+			<div class="container-page space-y-12">
+				<div class="mx-auto max-w-3xl space-y-4 text-center">
+					<h2>This is a section title</h2>
+					<p class="text-body-lg text-ink-soft">{introLong}</p>
+				</div>
+				<div class="grid grid-cols-12 gap-6 md:gap-8">
+					{
+						Array.from({ length: 4 }).map(() => (
+							<div class="col-span-12 sm:col-span-6 lg:col-span-3">
+								<FeatureItem>
+									<ph-check-circle slot="icon" class="text-2xl" weight="fill" />
+									{featureCopy}
+								</FeatureItem>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</Section>
+
+		<!-- Split: title left + feature grid right -->
+		<Section theme="paper">
+			<div class="container-page">
+				<div class="grid grid-cols-12 gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-4 lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+						<h2>This is a section title</h2>
+						<p class="text-body-lg text-ink-soft">{introLong}</p>
+					</div>
+					<div class="col-span-12 lg:col-span-7">
+						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+							{
+								Array.from({ length: 4 }).map(() => (
+									<FeatureItem>
+										<ph-lightning slot="icon" class="text-2xl" weight="fill" />
+										{featureCopy}
+									</FeatureItem>
+								))
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Centred narrow copy -->
+		<Section>
+			<div class="container-page">
+				<div class="mx-auto max-w-2xl space-y-4 text-center">
+					<h2>This is a section title</h2>
+					<p class="text-body-lg text-ink-soft">{introShort}</p>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Split: media + copy (reversed on mobile) -->
+		<Section theme="paper" spacing="none" class="py-16 md:py-20 lg:py-24">
+			<div class="container-page">
+				<div class="grid grid-cols-12 items-center gap-8 lg:gap-0">
+					<div class="col-span-12 order-2 lg:order-1 lg:col-span-6">
+						<MediaImage src={placeholder} alt="Feature media" ratio="16x9" />
+					</div>
+					<div
+						class="col-span-12 order-1 space-y-4 lg:order-2 lg:col-span-5 lg:col-start-8 lg:pl-10"
+					>
+						<h2>This is a section title</h2>
+						<p class="text-body text-ink-soft">
+							Lorem ipsum dolor sit amet consectetur adipiscing elit enim porttitor, ornare
+							luctus dignissim posuere platea aliquam turpis taciti fusce.
+						</p>
+						<p class="text-body text-ink-soft">
+							Lorem ipsum dolor sit amet consectetur adipiscing elit enim porttitor, ornare
+							luctus dignissim posuere platea aliquam turpis taciti fusce.
+						</p>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Full-bleed image split -->
+		<Section spacing="none" class="overflow-hidden py-16 md:py-20 lg:py-0">
+			<div class="container-page lg:py-24">
+				<div class="grid grid-cols-12 items-center gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-6 lg:col-span-5">
+						<h2>This is a section title</h2>
+						<p class="text-body-lg text-ink-soft">{introShort}</p>
+						<Button href="#">Button</Button>
+					</div>
+					<div class="col-span-12 lg:col-span-7">
+						<div
+							class="aspect-[4/3] overflow-hidden rounded-lg bg-paper lg:aspect-auto lg:min-h-[28rem] lg:rounded-none lg:rounded-l-lg lg:-mr-[var(--spacing-gutter)] lg:w-[calc(100%+var(--spacing-gutter))]"
+						>
+							<img
+								src={placeholder}
+								alt="Full bleed feature"
+								class="size-full object-cover"
+								loading="lazy"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Two equal columns -->
+		<Section theme="paper">
+			<div class="container-page space-y-10">
+				<h2 class="max-w-2xl">This is a section title</h2>
+				<div class="grid grid-cols-12 gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-3 md:col-span-6">
+						<h3>This is another title</h3>
+						<p class="text-body text-ink-soft">{introShort}</p>
+					</div>
+					<div class="col-span-12 space-y-3 md:col-span-6">
+						<h3>This is another title</h3>
+						<p class="text-body text-ink-soft">{introShort}</p>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- FAQ -->
+		<Section>
+			<div class="container-page">
+				<div class="grid grid-cols-12 gap-8 lg:gap-16">
+					<div class="col-span-12 lg:col-span-4">
+						<h2>Have a question?</h2>
+					</div>
+					<div class="col-span-12 border-t border-line lg:col-span-8">
+						{faqs.map((f) => <Accordion summary={f.q}>{f.a}</Accordion>)}
+					</div>
+				</div>
+			</div>
+		</Section>
+	</main>
+
+	<Footer />
+
+	<script>
+		import '@phosphor-icons/webcomponents/PhCheckCircle';
+		import '@phosphor-icons/webcomponents/PhLightning';
+		import '@phosphor-icons/webcomponents/PhCaretDown';
+	</script>
+</Layout>

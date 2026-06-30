@@ -1,0 +1,85 @@
+---
+interface FooterLink {
+	label: string;
+	href: string;
+}
+
+interface FooterColumn {
+	title: string;
+	links: FooterLink[];
+}
+
+interface Props {
+	brand?: string;
+	tagline?: string;
+	columns?: FooterColumn[];
+}
+
+const {
+	brand = 'Starter',
+	tagline = 'A minimal Astro + Tailwind starter carrying MAST’s design language.',
+	columns = [
+		{
+			title: 'Product',
+			links: [
+				{ label: 'Style guide', href: '/styles' },
+				{ label: 'Components', href: '/components' },
+				{ label: 'Basic layouts', href: '/basic-layouts' },
+				{ label: 'Inspired layouts', href: '/inspired-layouts' },
+			],
+		},
+		{
+			title: 'Resources',
+			links: [
+				{ label: 'Docs', href: '#' },
+				{ label: 'GitHub', href: 'https://github.com/krishowes/starter-theme' },
+			],
+		},
+		{
+			title: 'Company',
+			links: [
+				{ label: 'About', href: '#' },
+				{ label: 'Contact', href: '#' },
+			],
+		},
+	],
+} = Astro.props;
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-paper">
+	<div class="container-page grid grid-cols-2 gap-8 py-16 md:grid-cols-4">
+		<div class="col-span-2 space-y-3 md:col-span-1">
+			<a href="/" class="text-body-lg font-semibold">{brand}</a>
+			<p class="max-w-xs text-body-sm text-ink-soft">{tagline}</p>
+		</div>
+		{
+			columns.map((col) => (
+				<div class="space-y-3">
+					<p class="text-eyebrow uppercase tracking-wide text-ink-soft">{col.title}</p>
+					<ul class="space-y-2">
+						{col.links.map((l) => (
+							<li>
+								<a
+									href={l.href}
+									class="text-body-sm text-ink-soft transition-colors hover:text-brand"
+								>
+									{l.label}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))
+		}
+	</div>
+	<div class="border-t border-line">
+		<div
+			class="container-page flex flex-col items-center justify-between gap-2 py-6 text-body-sm text-ink-soft sm:flex-row"
+		>
+			<p>© {year} {brand}. All rights reserved.</p>
+			<p>Built with Astro + Tailwind v4.</p>
+		</div>
+	</div>
+</footer>

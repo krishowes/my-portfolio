@@ -1,0 +1,32 @@
+---
+interface Props {
+	src: string;
+	alt?: string;
+	overlay?: 'light' | 'dark';
+	minHeight?: string;
+	class?: string;
+	id?: string;
+}
+
+const {
+	src,
+	alt = '',
+	overlay = 'dark',
+	minHeight = 'min-h-[70vh] lg:min-h-[85vh]',
+	class: className,
+	id,
+} = Astro.props;
+
+const overlayClass = overlay === 'dark' ? 'bg-ink/55' : 'bg-white/40';
+---
+
+<section
+	id={id}
+	class:list={['relative flex items-center text-white', minHeight, className]}
+>
+	<img src={src} alt={alt} class="absolute inset-0 size-full object-cover" loading="lazy" />
+	<div class:list={['absolute inset-0', overlayClass]} aria-hidden="true"></div>
+	<div class="container-page relative z-10 w-full py-20 md:py-28">
+		<slot />
+	</div>
+</section>

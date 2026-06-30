@@ -1,0 +1,127 @@
+---
+interface Props {
+	id: string;
+	images: { src: string; alt?: string }[];
+	autoplayMs?: number;
+	class?: string;
+}
+
+const { id, images, autoplayMs = 4000, class: className } = Astro.props;
+---
+
+<div class:list={['space-y-4', className]} data-image-slider={id} data-autoplay={autoplayMs}>
+	<div class="relative aspect-[4/3] overflow-hidden rounded-lg sm:aspect-[16/9] lg:min-h-[28rem] lg:aspect-auto">
+		{
+			images.map((image, i) => (
+				<img
+					src={image.src}
+					alt={image.alt ?? ''}
+					class:list={[
+						'absolute inset-0 size-full object-cover object-top transition-opacity duration-700 ease-out',
+						i === 0 ? 'opacity-100' : 'opacity-0',
+					]}
+					data-image-slide={i}
+					loading={i === 0 ? 'eager' : 'lazy'}
+				/>
+			))
+		}
+	</div>
+
+	<div class="flex items-center justify-center gap-4">
+		<button
+			type="button"
+			class="flex size-10 cursor-pointer items-center justify-center rounded-lg border border-line/80 bg-white/90 text-ink backdrop-blur transition-colors hover:border-ink-soft"
+			data-image-slider-prev
+			aria-label="Previous slide"
+		>
+			<ph-arrow-left weight="bold"></ph-arrow-left>
+		</button>
+		<div class="flex gap-2" data-image-slider-dots>
+			{
+				images.map((_, i) => (
+					<button
+						type="button"
+						class:list={[
+							'size-2 rounded-full transition-colors',
+							i === 0 ? 'bg-brand' : 'bg-line',
+						]}
+						data-image-slider-dot={i}
+						aria-label={`Go to slide ${i + 1}`}
+					/>
+				))
+			}
+		</div>
+		<button
+			type="button"
+			class="flex size-10 cursor-pointer items-center justify-center rounded-lg border border-line/80 bg-white/90 text-ink backdrop-blur transition-colors hover:border-ink-soft"
+			data-image-slider-next
+			aria-label="Next slide"
+		>
+			<ph-arrow-right weight="bold"></ph-arrow-right>
+		</button>
+	</div>
+</div>
+
+<script>
+	import '@phosphor-icons/webcomponents/PhArrowLeft';
+	import '@phosphor-icons/webcomponents/PhArrowRight';
+</script>
+
+<script>
+	function initImageSliders(root: ParentNode = document) {
+		root.querySelectorAll<HTMLElement>('[data-image-slider]').forEach((slider) => {
+			const slides = slider.querySelectorAll<HTMLImageElement>('[data-image-slide]');
+			const dots = slider.querySelectorAll('[data-image-slider-dot]');
+			const prev = slider.querySelector('[data-image-slider-prev]');
+			const next = slider.querySelector('[data-image-slider-next]');
+			const autoplay = Number(slider.getAttribute('data-autoplay')) || 0;
+			const count = slides.length;
+			if (count === 0) return;
+
+			let index = 0;
+			let timer: ReturnType<typeof setInterval> | undefined;
+
+			const update = () => {
+				slides.forEach((slide, i) => {
+					slide.classList.toggle('opacity-100', i === index);
+					slide.classList.toggle('opacity-0', i !== index);
+				});
+				dots.forEach((dot, i) => {
+					dot.classList.toggle('bg-brand', i === index);
+					dot.classList.toggle('bg-line', i !== index);
+				});
+			};
+
+			const go = (nextIndex: number) => {
+				index = (nextIndex + count) % count;
+				update();
+			};
+
+			const startAutoplay = () => {
+				if (!autoplay) return;
+				clearInterval(timer);
+				timer = setInterval(() => go(index + 1), autoplay);
+			};
+
+			prev?.addEventListener('click', () => {
+				go(index - 1);
+				startAutoplay();
+			});
+			next?.addEventListener('click', () => {
+				go(index + 1);
+				startAutoplay();
+			});
+			dots.forEach((dot) => {
+				dot.addEventListener('click', () => {
+					go(Number(dot.getAttribute('data-image-slider-dot')));
+					startAutoplay();
+				});
+			});
+
+			startAutoplay();
+		});
+	}
+
+	initImageSliders();
+	document.addEventListener('astro:page-load', () => initImageSliders());
+</script>

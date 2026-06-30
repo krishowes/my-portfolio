@@ -1,0 +1,272 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+
+const colors = [
+	{ name: 'Brand', cls: 'bg-brand', hex: '#d14424' },
+	{ name: 'Brand dark', cls: 'bg-brand-dark', hex: '#9c331b' },
+	{ name: 'Ink', cls: 'bg-ink', hex: '#1d1c1a' },
+	{ name: 'Ink soft', cls: 'bg-ink-soft', hex: '#292825' },
+	{ name: 'Paper', cls: 'bg-paper', hex: '#f0eee6' },
+	{ name: 'Line', cls: 'bg-line', hex: '#cccabf' },
+	{ name: 'Line strong', cls: 'bg-line-strong', hex: '#474641' },
+	{ name: 'Accent yellow', cls: 'bg-accent-yellow', hex: '#f8d47a' },
+	{ name: 'Accent blue', cls: 'bg-accent-blue', hex: '#0073e6' },
+];
+
+// tag + literal utility class (literals so Tailwind doesn't purge them)
+const headings = [
+	{ tag: 'h1', cls: 'text-h1', range: '2.8 → 5.5rem' },
+	{ tag: 'h2', cls: 'text-h2', range: '2 → 3.8rem' },
+	{ tag: 'h3', cls: 'text-h3', range: '1.5 → 2.3rem' },
+	{ tag: 'h4', cls: 'text-h4', range: '1.3 → 1.5rem' },
+	{ tag: 'h5', cls: 'text-h5', range: '1.1 → 1.2rem' },
+	{ tag: 'h6', cls: 'text-h6', range: '0.9 → 1rem' },
+];
+
+const bodyText = [
+	{ cls: 'text-body-xl', range: '1.2 → 1.5rem' },
+	{ cls: 'text-body-lg', range: '1.1 → 1.25rem' },
+	{ cls: 'text-body', range: '0.9 → 1rem' },
+	{ cls: 'text-body-sm', range: '0.8 → 0.9rem' },
+];
+
+const spacing = [
+	{ token: 'gap-2 / p-2', bar: 'w-2', val: '0.5rem · 8px', note: 'MAST gap-sm' },
+	{ token: 'gap-4 / p-4', bar: 'w-4', val: '1rem · 16px', note: 'MAST gap-button' },
+	{ token: 'gap-6 / p-6', bar: 'w-6', val: '1.5rem · 24px', note: 'MAST gap-md' },
+	{ token: 'gap-10 / p-10', bar: 'w-10', val: '2.5rem · 40px', note: 'MAST gap-main' },
+	{ token: 'gap-16 / p-16', bar: 'w-16', val: '4rem · 64px', note: '' },
+];
+
+// literal class lookups so the dynamic spans/offsets survive Tailwind's purge
+const colSpan: Record<number, string> = {
+	1: 'col-span-1',
+	3: 'col-span-3',
+	4: 'col-span-4',
+	6: 'col-span-6',
+	8: 'col-span-8',
+	12: 'col-span-12',
+};
+const colStart: Record<number, string> = {
+	4: 'col-start-4',
+	5: 'col-start-5',
+	9: 'col-start-9',
+};
+
+// `start` = grid-column-start, i.e. an offset (empty columns before the item)
+type Cell = { s: number; start?: number };
+const grids: { label: string; cols: Cell[] }[] = [
+	{ label: '12 × 1', cols: [{ s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }, { s: 1 }] },
+	{ label: '6 + 6', cols: [{ s: 6 }, { s: 6 }] },
+	{ label: '4 + 4 + 4', cols: [{ s: 4 }, { s: 4 }, { s: 4 }] },
+	{ label: '8 + 4', cols: [{ s: 8 }, { s: 4 }] },
+	{ label: '6, offset 3 — col-span-6 col-start-4', cols: [{ s: 6, start: 4 }] },
+	{ label: '4, then 4 offset — col-start-9', cols: [{ s: 4 }, { s: 4, start: 9 }] },
+	{ label: '8, offset 4 — col-span-8 col-start-5', cols: [{ s: 8, start: 5 }] },
+];
+
+const nav = [
+	{ href: '#type', label: 'Type' },
+	{ href: '#color', label: 'Color' },
+	{ href: '#spacing', label: 'Spacing' },
+	{ href: '#grid', label: 'Grid' },
+	{ href: '#buttons', label: 'Buttons' },
+];
+---
+
+<Layout title="Style guide — Astro Starter">
+	<header class="sticky top-0 z-10 border-b border-line bg-white/85 backdrop-blur">
+		<nav class="container-page flex flex-wrap items-center gap-x-6 gap-y-2 py-4 text-body-sm">
+			<a href="/" class="font-semibold">Starter</a>
+			{nav.map((n) => <a href={n.href} class="text-ink-soft hover:text-brand">{n.label}</a>)}
+		</nav>
+	</header>
+
+	<main class="container-page space-y-24 py-16">
+		<div class="space-y-3">
+			<p class="text-eyebrow uppercase tracking-wide text-brand">Style guide</p>
+			<h1>Design tokens &amp; utilities</h1>
+			<p class="max-w-2xl text-body-lg text-ink-soft">
+				MAST's design language, ported into Tailwind v4's <code>@theme</code> — every
+				token below is a real Tailwind utility you can use in markup.
+			</p>
+		</div>
+
+		<!-- TYPE -->
+		<section id="type" class="scroll-mt-24 space-y-8">
+			<h2>Type</h2>
+			<div class="space-y-6 border-t border-line pt-8">
+				{
+					headings.map((h) => {
+						const Tag = h.tag;
+						return (
+							<div class="grid grid-cols-12 items-baseline gap-4">
+								<div class="col-span-12 text-body-sm text-ink-soft md:col-span-3">
+									<span class="font-semibold text-ink">{h.cls}</span><br />{h.range}
+								</div>
+								<Tag class="col-span-12 md:col-span-9">The quick brown fox</Tag>
+							</div>
+						);
+					})
+				}
+			</div>
+			<div class="space-y-5 border-t border-line pt-8">
+				{
+					bodyText.map((b) => (
+						<div class="grid grid-cols-12 items-baseline gap-4">
+							<div class="col-span-12 text-body-sm text-ink-soft md:col-span-3">
+								<span class="font-semibold text-ink">{b.cls}</span><br />{b.range}
+							</div>
+							<p class={`col-span-12 md:col-span-9 ${b.cls}`}>
+								The quick brown fox jumps over the lazy dog.
+							</p>
+						</div>
+					))
+				}
+				<div class="grid grid-cols-12 items-baseline gap-4">
+					<div class="col-span-12 text-body-sm text-ink-soft md:col-span-3">
+						<span class="font-semibold text-ink">text-eyebrow</span><br />0.7 → 0.8rem
+					</div>
+					<p class="col-span-12 text-eyebrow uppercase tracking-wide md:col-span-9">Eyebrow label</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- COLOR -->
+		<section id="color" class="scroll-mt-24 space-y-8">
+			<h2>Color</h2>
+			<div class="grid grid-cols-2 gap-6 border-t border-line pt-8 sm:grid-cols-3 lg:grid-cols-5">
+				{
+					colors.map((c) => (
+						<div class="space-y-2">
+							<div class={`h-20 rounded-lg border border-line ${c.cls}`} />
+							<div class="text-body-sm">
+								<div class="font-semibold">{c.name}</div>
+								<div class="text-ink-soft">{c.cls}</div>
+								<div class="text-ink-soft">{c.hex}</div>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- SPACING -->
+		<section id="spacing" class="scroll-mt-24 space-y-8">
+			<h2>Spacing</h2>
+			<p class="max-w-2xl text-body text-ink-soft">
+				Tailwind's spacing scale drives <code>gap</code>, padding and margin — and lines
+				up with MAST's gap tokens.
+			</p>
+			<div class="space-y-4 border-t border-line pt-8">
+				{
+					spacing.map((s) => (
+						<div class="flex items-center gap-4">
+							<div class="w-32 shrink-0 text-body-sm font-semibold">{s.token}</div>
+							<div class={`h-5 rounded bg-brand ${s.bar}`} />
+							<div class="text-body-sm text-ink-soft">{s.val}{s.note ? ` · ${s.note}` : ''}</div>
+						</div>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- GRID -->
+		<section id="grid" class="scroll-mt-24 space-y-8">
+			<h2>Grid</h2>
+			<p class="max-w-2xl text-body text-ink-soft">
+				A 12-column grid via <code>grid grid-cols-12</code> + <code>col-span-*</code>.
+				Offsets use <code>col-start-*</code> (the CSS-grid equivalent of Bootstrap's
+				<code>offset-*</code>) — highlighted cells below are offset. Stack on small
+				screens with responsive prefixes like <code>col-span-12 md:col-span-6</code>.
+			</p>
+			<div class="space-y-6 border-t border-line pt-8">
+				{
+					grids.map((g) => (
+						<div class="space-y-2">
+							<div class="text-body-sm text-ink-soft">{g.label}</div>
+							<div class="grid grid-cols-12 gap-2">
+								{g.cols.map((c) => (
+									<div
+										class={`${colSpan[c.s]} ${c.start ? colStart[c.start] : ''} ${c.start ? 'bg-brand text-white' : 'bg-paper'} rounded py-3 text-center text-body-sm`}
+									>
+										{c.s}{c.start ? ` @${c.start}` : ''}
+									</div>
+								))}
+							</div>
+						</div>
+					))
+				}
+			</div>
+
+			<div class="space-y-3 border-t border-line pt-8">
+				<div class="text-body-sm text-ink-soft">
+					Responsive — <code>col-span-12 sm:col-span-6 lg:col-span-3</code> · resize the window
+				</div>
+				<div class="grid grid-cols-12 gap-2">
+					<div class="col-span-12 rounded bg-paper py-3 text-center text-body-sm sm:col-span-6 lg:col-span-3">1</div>
+					<div class="col-span-12 rounded bg-paper py-3 text-center text-body-sm sm:col-span-6 lg:col-span-3">2</div>
+					<div class="col-span-12 rounded bg-paper py-3 text-center text-body-sm sm:col-span-6 lg:col-span-3">3</div>
+					<div class="col-span-12 rounded bg-paper py-3 text-center text-body-sm sm:col-span-6 lg:col-span-3">4</div>
+				</div>
+				<dl class="grid grid-cols-2 gap-x-6 gap-y-1 pt-2 text-body-sm text-ink-soft sm:grid-cols-4">
+					<div><span class="font-semibold text-ink">sm</span> ≥ 640px</div>
+					<div><span class="font-semibold text-ink">md</span> ≥ 768px</div>
+					<div><span class="font-semibold text-ink">lg</span> ≥ 1024px</div>
+					<div><span class="font-semibold text-ink">xl</span> ≥ 1280px</div>
+				</dl>
+			</div>
+		</section>
+
+		<!-- BUTTONS -->
+		<section id="buttons" class="scroll-mt-24 space-y-8">
+			<h2>Buttons</h2>
+
+			<div class="space-y-3 border-t border-line pt-8">
+				<p class="text-eyebrow uppercase tracking-wide text-ink-soft">Variants</p>
+				<div class="flex flex-wrap items-center gap-3">
+					<Button>Primary</Button>
+					<Button variant="secondary">Secondary</Button>
+					<Button variant="ghost">Ghost</Button>
+				</div>
+			</div>
+
+			<div class="space-y-3">
+				<p class="text-eyebrow uppercase tracking-wide text-ink-soft">Sizes</p>
+				<div class="flex flex-wrap items-center gap-3">
+					<Button size="sm">Small</Button>
+					<Button size="md">Medium</Button>
+					<Button size="lg">Large</Button>
+				</div>
+			</div>
+
+			<div class="space-y-3">
+				<p class="text-eyebrow uppercase tracking-wide text-ink-soft">States &amp; links</p>
+				<div class="flex flex-wrap items-center gap-3">
+					<Button href="/signup">Link button</Button>
+					<Button type="submit" disabled>Disabled</Button>
+				</div>
+			</div>
+
+			<div class="space-y-3">
+				<p class="text-eyebrow uppercase tracking-wide text-ink-soft">With icons</p>
+				<div class="flex flex-wrap items-center gap-3">
+					<Button variant="secondary">
+						<ph-arrow-left slot="icon-left" weight="bold"></ph-arrow-left>
+						Back
+					</Button>
+					<Button>
+						Continue
+						<ph-arrow-right slot="icon-right" weight="bold"></ph-arrow-right>
+					</Button>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<script>
+		import '@phosphor-icons/webcomponents/PhArrowLeft';
+		import '@phosphor-icons/webcomponents/PhArrowRight';
+	</script>
+</Layout>

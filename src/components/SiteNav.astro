@@ -1,0 +1,237 @@
+---
+import Button from './Button.astro';
+import NavBanner from './NavBanner.astro';
+
+interface NavLink {
+	label: string;
+	href: string;
+}
+
+interface DropdownGroup {
+	title: string;
+	links: NavLink[];
+}
+
+interface Props {
+	brand?: string;
+	showBanner?: boolean;
+	cta?: NavLink;
+}
+
+const {
+	brand = 'Starter',
+	showBanner = true,
+	cta = { label: 'Primary CTA', href: '#' },
+} = Astro.props;
+
+const simpleLinks: NavLink[] = [
+	{ label: 'Link 1', href: '#' },
+	{ label: 'Link 2', href: '#' },
+	{ label: 'Link 3', href: '#' },
+];
+
+const megaGroups: DropdownGroup[] = [
+	{
+		title: 'Category',
+		links: [
+			{ label: 'Link 1', href: '#' },
+			{ label: 'Link 2', href: '#' },
+			{ label: 'Link 3', href: '#' },
+		],
+	},
+	{
+		title: 'Category',
+		links: [
+			{ label: 'Link 1', href: '#' },
+			{ label: 'Link 2', href: '#' },
+			{ label: 'Link 3', href: '#' },
+		],
+	},
+	{
+		title: 'Category',
+		links: [
+			{ label: 'Link 1', href: '#' },
+			{ label: 'Link 2', href: '#' },
+			{ label: 'Link 3', href: '#' },
+		],
+	},
+	{
+		title: 'Category',
+		links: [
+			{ label: 'Link 1', href: '#' },
+			{ label: 'Link 2', href: '#' },
+			{ label: 'Link 3', href: '#' },
+		],
+	},
+];
+
+const linkClass =
+	'block rounded-md px-3 py-2 text-body-sm text-ink-soft transition-colors hover:bg-paper hover:text-brand';
+const navLinkClass =
+	'rounded-md px-3 py-2 text-body-sm text-ink-soft transition-colors hover:text-brand';
+const triggerClass =
+	'flex cursor-pointer list-none items-center gap-1 rounded-md px-3 py-2 text-body-sm text-ink-soft transition-colors hover:text-brand [&::-webkit-details-marker]:hidden';
+---
+
+<header class="sticky top-0 z-30" data-site-nav>
+	{showBanner && <NavBanner />}
+
+	<div class="border-b border-line bg-white/90 backdrop-blur">
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-[var(--spacing-gutter)] focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:shadow-md"
+		>
+			Skip to main content
+		</a>
+
+		<nav class="container-page flex items-center justify-between gap-4 py-4" aria-label="Main">
+			<a href="/" class="text-body-lg font-semibold tracking-tight">{brand}</a>
+
+			<!-- Desktop -->
+			<div class="hidden items-center gap-1 lg:flex">
+				<a href="#" class={navLinkClass}>Static Link</a>
+
+				<details class="nav-dropdown group relative">
+					<summary class={triggerClass}>
+						Simple Drop
+						<ph-caret-down
+							class="text-xs transition-transform group-open:rotate-180"
+							weight="bold"></ph-caret-down>
+					</summary>
+					<div
+						class="absolute top-full left-0 z-40 mt-2 min-w-44 rounded-lg border border-line bg-white p-2 shadow-lg"
+					>
+						{simpleLinks.map((l) => <a href={l.href} class={linkClass}>{l.label}</a>)}
+					</div>
+				</details>
+
+				<details class="nav-dropdown group relative">
+					<summary class={triggerClass}>
+						Mega Drop
+						<ph-caret-down
+							class="text-xs transition-transform group-open:rotate-180"
+							weight="bold"></ph-caret-down>
+					</summary>
+					<div
+						class="absolute top-full left-1/2 z-40 mt-2 w-[min(100vw-2rem,42rem)] -translate-x-1/2 rounded-lg border border-line bg-white p-6 shadow-lg"
+					>
+						<div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+							{
+								megaGroups.map((group) => (
+									<div class="space-y-2">
+										<p class="text-eyebrow uppercase tracking-wide text-ink-soft">
+											{group.title}
+										</p>
+										<ul class="space-y-1">
+											{group.links.map((l) => (
+												<li>
+													<a href={l.href} class={linkClass}>
+														{l.label}
+													</a>
+												</li>
+											))}
+										</ul>
+									</div>
+								))
+							}
+						</div>
+					</div>
+				</details>
+
+				<div class="ml-4 pl-4 border-l border-line">
+					<Button size="sm" href={cta.href}>{cta.label}</Button>
+				</div>
+			</div>
+
+			<!-- Mobile -->
+			<details class="group relative lg:hidden" data-mobile-nav>
+				<summary
+					class="flex cursor-pointer list-none flex-col justify-center gap-1.5 p-2 [&::-webkit-details-marker]:hidden"
+					aria-label="Open menu"
+				>
+					<span
+						class="block h-0.5 w-6 origin-center bg-ink transition-transform group-open:translate-y-2 group-open:rotate-45"
+					></span>
+					<span class="block h-0.5 w-6 bg-ink transition-opacity group-open:opacity-0"></span>
+					<span
+						class="block h-0.5 w-6 origin-center bg-ink transition-transform group-open:-translate-y-2 group-open:-rotate-45"
+					></span>
+				</summary>
+				<div
+					class="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-white shadow-lg"
+				>
+					<div class="container-page flex flex-col gap-1 py-4">
+						<a href="#" class={linkClass}>Static Link</a>
+
+						<details class="nav-dropdown group">
+							<summary class={triggerClass}>
+								Simple Drop
+								<ph-caret-down
+									class="ml-auto text-xs transition-transform group-open:rotate-180"
+									weight="bold"></ph-caret-down>
+							</summary>
+							<div class="pl-3">
+								{simpleLinks.map((l) => <a href={l.href} class={linkClass}>{l.label}</a>)}
+							</div>
+						</details>
+
+						<details class="nav-dropdown group">
+							<summary class={triggerClass}>
+								Mega Drop
+								<ph-caret-down
+									class="ml-auto text-xs transition-transform group-open:rotate-180"
+									weight="bold"></ph-caret-down>
+							</summary>
+							<div class="grid grid-cols-2 gap-4 px-3 py-2">
+								{
+									megaGroups.map((group) => (
+										<div class="space-y-2">
+											<p class="text-eyebrow uppercase tracking-wide text-ink-soft">
+												{group.title}
+											</p>
+											{group.links.map((l) => (
+												<a href={l.href} class={linkClass}>
+													{l.label}
+												</a>
+											))}
+										</div>
+									))
+								}
+							</div>
+						</details>
+
+						<Button size="sm" href={cta.href} class="mt-2 self-start">{cta.label}</Button>
+					</div>
+				</div>
+			</details>
+		</nav>
+	</div>
+</header>
+
+<script>
+	function initSiteNav(root: ParentNode = document) {
+		// Close other desktop dropdowns when one opens
+		root.querySelectorAll<HTMLDetailsElement>('.nav-dropdown').forEach((dropdown) => {
+			dropdown.addEventListener('toggle', () => {
+				if (!dropdown.open) return;
+				root.querySelectorAll<HTMLDetailsElement>('.nav-dropdown').forEach((other) => {
+					if (other !== dropdown) other.open = false;
+				});
+			});
+		});
+
+		// Lock body scroll when mobile nav is open
+		root.querySelectorAll<HTMLDetailsElement>('[data-mobile-nav]').forEach((menu) => {
+			menu.addEventListener('toggle', () => {
+				document.body.style.overflow = menu.open ? 'hidden' : '';
+			});
+		});
+	}
+
+	initSiteNav();
+	document.addEventListener('astro:page-load', () => initSiteNav());
+</script>
+
+<script>
+	import '@phosphor-icons/webcomponents/PhCaretDown';
+</script>

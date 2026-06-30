@@ -1,0 +1,16 @@
+---
+interface Props {
+	title?: string;
+	class?: string;
+	previewClass?: string;
+}
+
+const { title, class: className, previewClass } = Astro.props;
+---
+
+<div class:list={['space-y-3', className]}>
+	{title && <h4 class="text-h5">{title}</h4>}
+	<div class:list={['rounded-lg border border-line bg-paper p-6', previewClass]}>
+		<slot />
+	</div>
+</div>

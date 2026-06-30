@@ -1,0 +1,37 @@
+---
+interface Props {
+	/** Render the whole card as a link. */
+	href?: string;
+	eyebrow?: string;
+	heading?: string;
+	class?: string;
+}
+
+const { href, eyebrow, heading, class: className } = Astro.props;
+const Tag = href ? 'a' : 'article';
+const hasMedia = Astro.slots.has('media');
+const hasFooter = Astro.slots.has('footer');
+---
+
+<Tag
+	href={href}
+	class:list={[
+		'group block overflow-hidden rounded-lg border border-line bg-white',
+		href && 'transition-colors hover:border-ink-soft',
+		className,
+	]}
+>
+	{
+		hasMedia && (
+			<div class="aspect-[16/9] overflow-hidden bg-paper">
+				<slot name="media" />
+			</div>
+		)
+	}
+	<div class="space-y-3 p-6 md:p-8">
+		{eyebrow && <p class="text-eyebrow uppercase tracking-wide text-brand">{eyebrow}</p>}
+		{heading && <h3 class="text-h4">{heading}</h3>}
+		<div class="text-body text-ink-soft"><slot /></div>
+		{hasFooter && <div class="pt-2"><slot name="footer" /></div>}
+	</div>
+</Tag>

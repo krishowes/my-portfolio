@@ -1,0 +1,138 @@
+---
+interface Slide {
+	heading: string;
+	body: string;
+	icon?: string;
+	eyebrow?: string;
+}
+
+interface Props {
+	id: string;
+	slides: Slide[];
+	class?: string;
+}
+
+const { id, slides, class: className } = Astro.props;
+---
+
+<div class:list={['space-y-4', className]} data-slider={id}>
+	<div class="overflow-hidden">
+		<div class="flex transition-transform duration-300 ease-out" data-slider-track>
+			{
+				slides.map((slide) => (
+					<article class="w-full shrink-0 px-0 pr-6">
+						<div class="flex h-full flex-col gap-3 rounded-lg border border-line bg-white p-6">
+							{slide.icon === 'tree' && (
+								<ph-tree class="text-2xl text-brand" weight="fill"></ph-tree>
+							)}
+							{slide.icon === 'broadcast' && (
+								<ph-broadcast class="text-2xl text-brand" weight="fill"></ph-broadcast>
+							)}
+							{slide.icon === 'mountains' && (
+								<ph-mountains class="text-2xl text-brand" weight="fill"></ph-mountains>
+							)}
+							{slide.icon === 'waves' && (
+								<ph-waves class="text-2xl text-brand" weight="fill"></ph-waves>
+							)}
+							{slide.icon === 'binoculars' && (
+								<ph-binoculars class="text-2xl text-brand" weight="fill"></ph-binoculars>
+							)}
+							{slide.eyebrow && (
+								<p class="text-eyebrow uppercase tracking-wide text-brand">{slide.eyebrow}</p>
+							)}
+							<h3 class="text-h4">{slide.heading}</h3>
+							<p class="text-body text-ink-soft">{slide.body}</p>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+
+	<div class="flex items-center justify-between gap-4">
+		<div class="flex gap-2" data-slider-dots>
+			{
+				slides.map((_, i) => (
+					<button
+						type="button"
+						class:list={[
+							'size-2 rounded-full transition-colors',
+							i === 0 ? 'bg-brand' : 'bg-line',
+						]}
+						data-slider-dot={i}
+						aria-label={`Go to slide ${i + 1}`}
+					/>
+				))
+			}
+		</div>
+		<div class="flex gap-2">
+			<button
+				type="button"
+				class="flex size-10 cursor-pointer items-center justify-center rounded-lg border border-line bg-white text-ink transition-colors hover:border-ink-soft"
+				data-slider-prev
+				aria-label="Previous slide"
+			>
+				<ph-arrow-left weight="bold"></ph-arrow-left>
+			</button>
+			<button
+				type="button"
+				class="flex size-10 cursor-pointer items-center justify-center rounded-lg border border-line bg-white text-ink transition-colors hover:border-ink-soft"
+				data-slider-next
+				aria-label="Next slide"
+			>
+				<ph-arrow-right weight="bold"></ph-arrow-right>
+			</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	import '@phosphor-icons/webcomponents/PhArrowLeft';
+	import '@phosphor-icons/webcomponents/PhArrowRight';
+	import '@phosphor-icons/webcomponents/PhTree';
+	import '@phosphor-icons/webcomponents/PhBroadcast';
+	import '@phosphor-icons/webcomponents/PhMountains';
+	import '@phosphor-icons/webcomponents/PhWaves';
+	import '@phosphor-icons/webcomponents/PhBinoculars';
+</script>
+
+<script>
+	function initSliders(root: ParentNode = document) {
+		root.querySelectorAll<HTMLElement>('[data-slider]').forEach((slider) => {
+			const track = slider.querySelector<HTMLElement>('[data-slider-track]');
+			const slides = track?.children.length ?? 0;
+			const dots = slider.querySelectorAll('[data-slider-dot]');
+			const prev = slider.querySelector('[data-slider-prev]');
+			const next = slider.querySelector('[data-slider-next]');
+			if (!track || slides === 0) return;
+
+			let index = 0;
+
+			const update = () => {
+				track.style.transform = `translateX(-${index * 100}%)`;
+				dots.forEach((dot, i) => {
+					dot.classList.toggle('bg-brand', i === index);
+					dot.classList.toggle('bg-line', i !== index);
+				});
+			};
+
+			prev?.addEventListener('click', () => {
+				index = (index - 1 + slides) % slides;
+				update();
+			});
+			next?.addEventListener('click', () => {
+				index = (index + 1) % slides;
+				update();
+			});
+			dots.forEach((dot) => {
+				dot.addEventListener('click', () => {
+					index = Number(dot.getAttribute('data-slider-dot'));
+					update();
+				});
+			});
+		});
+	}
+
+	initSliders();
+	document.addEventListener('astro:page-load', () => initSliders());
+</script>

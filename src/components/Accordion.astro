@@ -1,0 +1,23 @@
+---
+interface Props {
+	/** Summary text; or use the `summary` slot for richer markup. */
+	summary?: string;
+	open?: boolean;
+}
+
+const { summary, open = false } = Astro.props;
+---
+
+<details class="group border-b border-line" open={open}>
+	<summary
+		class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-body-lg font-semibold [&::-webkit-details-marker]:hidden"
+	>
+		<span><slot name="summary">{summary}</slot></span>
+		<ph-caret-down
+			class="shrink-0 text-ink-soft transition-transform duration-200 group-open:rotate-180"
+			weight="bold"></ph-caret-down>
+	</summary>
+	<div class="pb-4 text-body text-ink-soft">
+		<slot />
+	</div>
+</details>

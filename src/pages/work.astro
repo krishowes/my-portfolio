@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PortfolioNav from '../components/home/PortfolioNav.astro';
+import PortfolioFooter from '../components/home/PortfolioFooter.astro';
+import MiniMap from '../components/home/MiniMap.astro';
+import ProjectCard from '../components/home/ProjectCard.astro';
+
+const projects = [
+	{ id: 'project-1', theme: 'dark' as const },
+	{ id: 'project-2', theme: 'paper' as const },
+	{ id: 'project-3', theme: 'yellow' as const },
+	{ id: 'project-4', theme: 'blue' as const },
+];
+---
+
+<Layout title="Work — Kris Howes">
+	<div class="min-h-screen bg-page font-sans text-cocoa">
+		<PortfolioNav />
+		<MiniMap />
+
+		<main id="main" class="mx-auto max-w-[2200px]">
+			<!-- Hero -->
+			<section class="px-5 py-16 sm:px-8 md:py-24 lg:px-[50px] lg:py-[96px]">
+				<div class="flex flex-col gap-16 lg:gap-24">
+					<h1
+						class="max-w-[80%] text-[clamp(3rem,9vw,8rem)] leading-none font-medium text-coral"
+					>
+						Main message with illustrations design and iconography here
+					</h1>
+					<div class="flex flex-wrap gap-8">
+						<a
+							href="#work"
+							class="inline-flex items-center gap-2.5 rounded-[8px] border border-black bg-card-paper px-[23px] py-[20px] text-xl font-medium tracking-[1px] text-cocoa shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5"
+						>
+							Get started
+							<img src="/figma/arrow-down.svg" alt="" class="size-6" />
+						</a>
+						<a
+							href="#about"
+							class="inline-flex items-center gap-2.5 rounded-[8px] border border-black bg-card-paper px-[23px] py-[20px] text-xl font-medium tracking-[1px] text-cocoa shadow-[3px_3px_0px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5"
+						>
+							My Process
+							<img src="/figma/arrow-up-right.svg" alt="" class="size-6" />
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<!-- Projects -->
+			<section id="work" class="flex flex-col">
+				{projects.map((p) => <ProjectCard id={p.id} theme={p.theme} />)}
+			</section>
+
+			<PortfolioFooter reserveChatSpace />
+		</main>
+
+		<!-- Floating chat button -->
+		<a
+			href="#contact"
+			aria-label="Open chat"
+			class="fixed right-5 bottom-5 z-30 block size-20 transition-transform hover:scale-105 md:right-8 md:bottom-8 md:size-[140px]"
+		>
+			<img src="/figma/chat-button.svg" alt="" class="size-full" />
+		</a>
+	</div>
+</Layout>

@@ -1,0 +1,26 @@
+---
+interface Props {
+	theme?: 'default' | 'paper' | 'brand';
+	spacing?: 'default' | 'lg' | 'none';
+	class?: string;
+	id?: string;
+}
+
+const { theme = 'default', spacing = 'default', class: className, id } = Astro.props;
+
+const spacingClass = {
+	default: 'py-16 md:py-20 lg:py-24',
+	lg: 'py-20 md:py-28 lg:py-32',
+	none: '',
+}[spacing];
+
+const themeClass = {
+	default: 'bg-white text-ink',
+	paper: 'bg-paper text-ink',
+	brand: 'bg-brand text-white',
+}[theme];
+---
+
+<section id={id} class:list={[spacingClass, themeClass, className]}>
+	<slot />
+</section>

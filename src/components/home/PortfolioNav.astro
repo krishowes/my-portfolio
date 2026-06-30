@@ -1,0 +1,92 @@
+---
+interface NavLink {
+	label: string;
+	href: string;
+	badge?: string;
+}
+
+interface Props {
+	links?: NavLink[];
+	cta?: { label: string; href: string };
+}
+
+const {
+	links = [
+		{ label: 'Work', href: '/work', badge: '12' },
+		{ label: 'Services', href: '#services' },
+		{ label: 'About', href: '#about' },
+		{ label: 'Stories', href: '#stories' },
+	],
+	cta = { label: 'Let’s talk', href: '#contact' },
+} = Astro.props;
+---
+
+<header class="sticky top-0 z-30 w-full">
+	<nav
+		class="mx-auto flex max-w-[2200px] items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-[50px]"
+		aria-label="Main"
+	>
+		<a href="/" class="block shrink-0" aria-label="Kris Howes — home">
+			<img src="/figma/k-logo.svg" alt="Kris Howes" class="h-9 w-auto sm:h-11" />
+		</a>
+
+		<!-- Center glass pill (desktop) -->
+		<div
+			class="hidden items-center gap-8 rounded-[10px] bg-[rgba(217,217,217,0.5)] px-5 py-2 text-cocoa backdrop-blur-[17px] md:flex lg:gap-[41px]"
+		>
+			{
+				links.map((l) => (
+					<a
+						href={l.href}
+						class="flex items-center gap-1.5 text-[clamp(1rem,1.4vw,1.5rem)] leading-none font-medium transition-opacity hover:opacity-60"
+					>
+						{l.label}
+						{l.badge && <span class="text-[0.55em] leading-none">{l.badge}</span>}
+					</a>
+				))
+			}
+		</div>
+
+		<!-- CTA pill -->
+		<a
+			href={cta.href}
+			class="hidden shrink-0 items-center gap-3 rounded-full text-cocoa transition-opacity hover:opacity-70 md:inline-flex"
+		>
+			<span class="size-[33px] rounded-full bg-[#d9d9d9]"></span>
+			<span class="pr-1 text-[clamp(1rem,1.4vw,1.5rem)] leading-none font-medium">{cta.label}</span>
+		</a>
+
+		<!-- Mobile menu -->
+		<details class="group relative md:hidden">
+			<summary
+				class="flex size-11 cursor-pointer list-none items-center justify-center rounded-[10px] bg-[rgba(217,217,217,0.5)] backdrop-blur-[17px] [&::-webkit-details-marker]:hidden"
+				aria-label="Toggle menu"
+			>
+				<span class="flex flex-col gap-1.5">
+					<span class="block h-0.5 w-5 bg-cocoa transition-transform group-open:translate-y-2 group-open:rotate-45"></span>
+					<span class="block h-0.5 w-5 bg-cocoa transition-opacity group-open:opacity-0"></span>
+					<span class="block h-0.5 w-5 bg-cocoa transition-transform group-open:-translate-y-2 group-open:-rotate-45"></span>
+				</span>
+			</summary>
+			<div
+				class="absolute right-0 top-full mt-2 flex w-56 flex-col gap-1 rounded-[14px] bg-[rgba(217,217,217,0.85)] p-3 text-cocoa backdrop-blur-[17px]"
+			>
+				{
+					links.map((l) => (
+						<a href={l.href} class="rounded-lg px-3 py-2 text-lg font-medium hover:bg-white/40">
+							{l.label}
+							{l.badge && <span class="ml-1 text-xs align-super">{l.badge}</span>}
+						</a>
+					))
+				}
+				<a
+					href={cta.href}
+					class="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-lg font-medium hover:bg-white/40"
+				>
+					<span class="size-5 rounded-full bg-cocoa"></span>
+					{cta.label}
+				</a>
+			</div>
+		</details>
+	</nav>
+</header>

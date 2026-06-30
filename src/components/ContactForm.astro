@@ -1,0 +1,71 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+	id?: string;
+	class?: string;
+}
+
+const { id = 'contact-form', class: className } = Astro.props;
+
+const fieldClass =
+	'peer w-full rounded-lg border border-line bg-transparent px-4 pb-2 pt-6 text-body outline-none transition-colors focus:border-brand';
+const labelClass =
+	'pointer-events-none absolute left-4 top-2 text-eyebrow uppercase tracking-wide text-ink-soft transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-body peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-eyebrow peer-focus:uppercase peer-focus:tracking-wide';
+---
+
+<form id={id} class:list={['space-y-4', className]} method="post">
+	<div class="relative">
+		<input class={fieldClass} type="text" name="name" id={`${id}-name`} placeholder=" " required />
+		<label class={labelClass} for={`${id}-name`}>Name*</label>
+	</div>
+	<div class="relative">
+		<input
+			class={fieldClass}
+			type="email"
+			name="email"
+			id={`${id}-email`}
+			placeholder=" "
+			required
+		/>
+		<label class={labelClass} for={`${id}-email`}>Email*</label>
+	</div>
+	<div class="relative">
+		<select class:list={[fieldClass, 'cursor-pointer']} name="favorite" id={`${id}-favorite`}>
+			<option value="">Select one...</option>
+			<option value="first">First Choice</option>
+			<option value="second">Second Choice</option>
+			<option value="third">Third Choice</option>
+		</select>
+		<label class={labelClass} for={`${id}-favorite`}>Favorite Item</label>
+	</div>
+	<div class="relative">
+		<textarea
+			class:list={[fieldClass, 'min-h-28 resize-y']}
+			name="comment"
+			id={`${id}-comment`}
+			placeholder=" "
+		></textarea>
+		<label class={labelClass} for={`${id}-comment`}>Comment</label>
+	</div>
+	<fieldset class="space-y-2">
+		<legend class="text-body-sm font-medium">Radio</legend>
+		<label class="flex items-center gap-2 text-body">
+			<input type="radio" name="radio" value="a" class="accent-brand" /> Radio
+		</label>
+		<label class="flex items-center gap-2 text-body">
+			<input type="radio" name="radio" value="b" class="accent-brand" /> Radio
+		</label>
+	</fieldset>
+	<fieldset class="space-y-2">
+		<legend class="text-body-sm font-medium">Checkbox</legend>
+		<label class="flex items-center gap-2 text-body">
+			<input type="checkbox" name="check-a" class="accent-brand" /> Checkbox
+		</label>
+		<label class="flex items-center gap-2 text-body">
+			<input type="checkbox" name="check-b" class="accent-brand" /> Checkbox
+		</label>
+	</fieldset>
+	<p class="text-body-sm text-ink-soft">*Required</p>
+	<Button type="submit">Submit</Button>
+</form>

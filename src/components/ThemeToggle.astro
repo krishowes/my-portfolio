@@ -1,0 +1,50 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<button
+	type="button"
+	class:list={[
+		'inline-flex cursor-pointer items-center gap-2 rounded-lg border border-line px-3 py-2 text-body-sm text-ink-soft transition-colors hover:border-ink-soft hover:text-ink',
+		className,
+	]}
+	data-theme-toggle
+	aria-label="Toggle theme"
+>
+	<ph-sun class="text-lg dark:hidden" weight="bold"></ph-sun>
+	<ph-moon class="hidden text-lg dark:block" weight="bold"></ph-moon>
+	<span>Theme toggle</span>
+</button>
+
+<script>
+	import '@phosphor-icons/webcomponents/PhSun';
+	import '@phosphor-icons/webcomponents/PhMoon';
+</script>
+
+<script>
+	const storageKey = 'starter-theme';
+
+	function applyTheme(theme: 'light' | 'dark') {
+		document.documentElement.classList.toggle('dark', theme === 'dark');
+		localStorage.setItem(storageKey, theme);
+	}
+
+	function initThemeToggle(root: ParentNode = document) {
+		const saved = localStorage.getItem(storageKey) as 'light' | 'dark' | null;
+		if (saved) applyTheme(saved);
+
+		root.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+				applyTheme(next);
+			});
+		});
+	}
+
+	initThemeToggle();
+	document.addEventListener('astro:page-load', () => initThemeToggle());
+</script>

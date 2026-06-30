@@ -1,0 +1,514 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Card from '../components/Card.astro';
+import Accordion from '../components/Accordion.astro';
+import Button from '../components/Button.astro';
+import ComponentDemo from '../components/ComponentDemo.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Modal from '../components/Modal.astro';
+import Slider from '../components/Slider.astro';
+import InlineVideo from '../components/InlineVideo.astro';
+import Marquee from '../components/Marquee.astro';
+import Tabs from '../components/Tabs.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import MediaImage from '../components/MediaImage.astro';
+import Table from '../components/Table.astro';
+import NavBanner from '../components/NavBanner.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+const faqs = [
+	{
+		q: 'Lorem ipsum?',
+		a: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+	},
+	{
+		q: 'Lorem ipsum?',
+		a: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+	},
+	{
+		q: 'Lorem ipsum?',
+		a: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+	},
+];
+
+const slotSlides = [
+	{
+		icon: 'tree',
+		heading: 'The steady center',
+		body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+	},
+	{
+		icon: 'broadcast',
+		heading: 'Signal through noise',
+		body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+	},
+	{
+		icon: 'mountains',
+		heading: 'Foundation beneath',
+		body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+	},
+	{
+		icon: 'waves',
+		heading: 'Flow state',
+		body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+	},
+	{
+		icon: 'binoculars',
+		heading: 'The long view',
+		body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+	},
+];
+
+const cmsSlides = [
+	{
+		eyebrow: 'Blog',
+		heading: 'The Journey of Resilience',
+		body: 'A reflective journey on building resilience through life experiences.',
+	},
+	{
+		eyebrow: 'Blog',
+		heading: 'Resilience and Strength',
+		body: 'The connection between resilience and inner strength.',
+	},
+	{
+		eyebrow: 'Blog',
+		heading: 'Embracing Challenges',
+		body: 'How embracing challenges can lead to personal growth.',
+	},
+];
+
+const marqueeItems = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7'];
+
+const tabCopy =
+	'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+
+const poster =
+	'https://cdn.prod.website-files.com/6970bf7914853738a0b435bf/6970bf7b14853738a0b436ac_whatsmast-clip-poster.webp';
+const videoSrc =
+	'https://cdn.prod.website-files.com/62fa4f08068b2b9c3fab8161%2F68e817950d0a508e8a165a71_whatsmast-clip-transcode.mp4';
+
+const placeholder =
+	'data:image/svg+xml,' +
+	encodeURIComponent(
+		'<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><rect fill="#f0eee6" width="800" height="450"/><text x="400" y="230" text-anchor="middle" fill="#474641" font-family="system-ui" font-size="24">Image</text></svg>',
+	);
+---
+
+<Layout title="Components — Astro Starter">
+	<Navbar />
+
+	<main class="container-page space-y-24 py-16">
+		<header class="space-y-3">
+			<p class="text-eyebrow uppercase tracking-wide text-brand">Components</p>
+			<h1>Built from MAST, the Tailwind way</h1>
+			<p class="max-w-2xl text-body-lg text-ink-soft">
+				Reusable Astro components on the same tokens as the style guide — ported from
+				the <a
+					href="https://mast-2-f06558.webflow.io/components"
+					class="text-brand underline underline-offset-2">MAST components page</a
+				>.
+			</p>
+		</header>
+
+		<!-- INTERACTIVE -->
+		<section id="interactive" class="scroll-mt-24 space-y-16">
+			<h2>Interactive</h2>
+
+			<!-- Buttons -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Buttons</h3>
+				<div class="grid grid-cols-12 gap-6">
+					<ComponentDemo title="Default" class="col-span-12 sm:col-span-6 lg:col-span-4">
+						<Button href="#">Button</Button>
+					</ComponentDemo>
+					<ComponentDemo
+						title="Default + Icon Right"
+						class="col-span-12 sm:col-span-6 lg:col-span-4"
+					>
+						<Button href="#">
+							Button
+							<ph-arrow-up-right slot="icon-right" weight="bold"></ph-arrow-up-right>
+						</Button>
+					</ComponentDemo>
+					<ComponentDemo
+						title="Default + Icon Left"
+						class="col-span-12 sm:col-span-6 lg:col-span-4"
+					>
+						<Button href="#">
+							<ph-play slot="icon-left" weight="fill"></ph-play>
+							Button
+						</Button>
+					</ComponentDemo>
+					<ComponentDemo title="Secondary" class="col-span-12 sm:col-span-6 lg:col-span-4">
+						<Button variant="secondary" href="#">Button</Button>
+					</ComponentDemo>
+					<ComponentDemo
+						title="Secondary + Icon Right"
+						class="col-span-12 sm:col-span-6 lg:col-span-4"
+					>
+						<Button variant="secondary" href="#">
+							Button
+							<ph-arrow-up-right slot="icon-right" weight="bold"></ph-arrow-up-right>
+						</Button>
+					</ComponentDemo>
+					<ComponentDemo
+						title="Secondary + Icon Left"
+						class="col-span-12 sm:col-span-6 lg:col-span-4"
+					>
+						<Button variant="secondary" href="#">
+							<ph-play slot="icon-left" weight="fill"></ph-play>
+							Button
+						</Button>
+					</ComponentDemo>
+					<ComponentDemo title="Text Link" class="col-span-12 sm:col-span-6 lg:col-span-4">
+						<Button variant="link" href="#">Text</Button>
+					</ComponentDemo>
+				</div>
+			</div>
+
+			<!-- Forms -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Forms</h3>
+				<div class="max-w-xl">
+					<ContactForm />
+				</div>
+			</div>
+
+			<!-- Accordion -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Accordion</h3>
+				<div class="max-w-2xl">
+					{faqs.map((f) => <Accordion summary={f.q}>{f.a}</Accordion>)}
+				</div>
+			</div>
+
+			<!-- Modal -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Modal</h3>
+				<Modal id="demo-modal" triggerLabel="Open modal">
+					<h3 class="text-h4 pr-8">This is a modal!</h3>
+					<p class="text-body text-ink-soft">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+						veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+						commodo consequat.
+					</p>
+				</Modal>
+			</div>
+
+			<!-- Slider -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Slider</h3>
+				<div class="space-y-10">
+					<div class="space-y-4">
+						<h4 class="text-h5">Slots based</h4>
+						<Slider id="slider-slots" slides={slotSlides} />
+					</div>
+					<hr class="border-line" />
+					<div class="space-y-4">
+						<h4 class="text-h5">CMS based</h4>
+						<Slider id="slider-cms" slides={cmsSlides} />
+					</div>
+				</div>
+			</div>
+
+			<!-- Inline video -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Inline video</h3>
+				<div class="max-w-3xl">
+					<InlineVideo poster={poster} src={videoSrc} alt="MAST overview clip" />
+				</div>
+			</div>
+
+			<!-- Marquee -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Marquee</h3>
+				<Marquee>
+					{
+						marqueeItems.map((item) => (
+							<div class="min-w-56 rounded-lg border border-line bg-white p-6">
+								<h4 class="text-h5">{item}</h4>
+							</div>
+						))
+					}
+				</Marquee>
+			</div>
+
+			<!-- Tabs -->
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Tabs</h3>
+				<div class="space-y-10">
+					<div class="space-y-4">
+						<h4 class="text-h5">Example 1</h4>
+						<Tabs
+							id="tabs-horizontal"
+							tabs={[
+								{ label: 'Tab 1', id: 'one' },
+								{ label: 'Tab 2', id: 'two' },
+								{ label: 'Tab 3', id: 'three' },
+							]}
+						>
+							<p slot="one"><strong class="text-ink">Tab 1</strong> — {tabCopy}</p>
+							<p slot="two"><strong class="text-ink">Tab 2</strong> — {tabCopy}</p>
+							<p slot="three"><strong class="text-ink">Tab 3</strong> — {tabCopy}</p>
+						</Tabs>
+					</div>
+					<hr class="border-line" />
+					<div class="space-y-4">
+						<h4 class="text-h5">Example 2</h4>
+						<Tabs
+							id="tabs-vertical"
+							orientation="vertical"
+							tabs={[
+								{ label: 'Tab 1', id: 'v-one' },
+								{ label: 'Tab 2', id: 'v-two' },
+								{ label: 'Tab 3', id: 'v-three' },
+							]}
+						>
+							<p slot="v-one"><strong class="text-ink">Tab 1</strong> — {tabCopy}</p>
+							<p slot="v-two"><strong class="text-ink">Tab 2</strong> — {tabCopy}</p>
+							<p slot="v-three"><strong class="text-ink">Tab 3</strong> — {tabCopy}</p>
+						</Tabs>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- CONTENT -->
+		<section id="content" class="scroll-mt-24 space-y-16">
+			<h2>Content</h2>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Breadcrumb</h3>
+				<Breadcrumb
+					items={[
+						{ label: 'Home', href: '/' },
+						{ label: 'Components', href: '/components' },
+						{ label: 'Breadcrumb' },
+					]}
+				/>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Icon</h3>
+				<div class="flex flex-wrap items-end gap-8">
+					<div class="space-y-2 text-center">
+						<ph-star class="text-[1em] text-brand" weight="fill"></ph-star>
+						<p class="text-eyebrow uppercase tracking-wide text-ink-soft">1 EM</p>
+					</div>
+					<div class="space-y-2 text-center">
+						<ph-star class="text-xl text-brand" weight="fill"></ph-star>
+						<p class="text-eyebrow uppercase tracking-wide text-ink-soft">Small</p>
+					</div>
+					<div class="space-y-2 text-center">
+						<ph-star class="text-3xl text-brand" weight="fill"></ph-star>
+						<p class="text-eyebrow uppercase tracking-wide text-ink-soft">Medium</p>
+					</div>
+					<div class="space-y-2 text-center">
+						<ph-star class="text-5xl text-brand" weight="fill"></ph-star>
+						<p class="text-eyebrow uppercase tracking-wide text-ink-soft">Large</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Image</h3>
+				<div class="grid grid-cols-12 gap-6">
+					<ComponentDemo title="Inherit" class="col-span-12 sm:col-span-6 lg:col-span-3">
+						<MediaImage src={placeholder} alt="Inherit ratio" ratio="inherit" />
+					</ComponentDemo>
+					<ComponentDemo title="16×9" class="col-span-12 sm:col-span-6 lg:col-span-3">
+						<MediaImage src={placeholder} alt="16 by 9 ratio" ratio="16x9" />
+					</ComponentDemo>
+					<ComponentDemo title="4×3" class="col-span-12 sm:col-span-6 lg:col-span-3">
+						<MediaImage src={placeholder} alt="4 by 3 ratio" ratio="4x3" />
+					</ComponentDemo>
+					<ComponentDemo title="1×1" class="col-span-12 sm:col-span-6 lg:col-span-3">
+						<MediaImage src={placeholder} alt="1 by 1 ratio" ratio="1x1" />
+					</ComponentDemo>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Card</h3>
+				<div class="grid grid-cols-12 gap-6">
+					<Card class="col-span-12 md:col-span-4" heading="Simple">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore.
+					</Card>
+					<Card class="col-span-12 md:col-span-4" heading="Actionable">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore.
+						<Button slot="footer" variant="secondary" size="sm" href="#">Learn more</Button>
+					</Card>
+					<Card class="col-span-12 md:col-span-4" heading="Link cover" href="#">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore.
+					</Card>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Table</h3>
+				<Table>
+					<thead>
+						<tr>
+							<th>Heading</th>
+							<th>Heading</th>
+							<th>Heading</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Content in a cell</td>
+							<td>Content in a cell</td>
+							<td>Content in a cell</td>
+						</tr>
+						<tr>
+							<td>Content in a cell</td>
+							<td>Content in a cell</td>
+							<td>Content in a cell</td>
+						</tr>
+						<tr>
+							<td colspan="2"
+								>Content in a cell with a lot more content that needs to span two columns</td
+							>
+							<td>Content in a cell</td>
+						</tr>
+					</tbody>
+				</Table>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Eyebrow</h3>
+				<p class="text-eyebrow uppercase tracking-wide text-brand">Lorem ipsum</p>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Heading</h3>
+				<h1>Heading</h1>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Rich Text</h3>
+				<div class="prose-like max-w-2xl space-y-4 text-body text-ink-soft">
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat.
+					</p>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Plain Text</h3>
+				<p class="text-body">This is some text inside of a div block.</p>
+			</div>
+		</section>
+
+		<!-- GLOBAL -->
+		<section id="global" class="scroll-mt-24 space-y-16">
+			<h2>Global</h2>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Nav Banner</h3>
+				<div class="overflow-hidden rounded-lg border border-line">
+					<NavBanner />
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Nav</h3>
+				<p class="text-body text-ink-soft">
+					The sticky nav at the top of this page is the <code>Navbar</code> component.
+				</p>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Footer</h3>
+				<p class="text-body text-ink-soft">
+					The footer below is the <code>Footer</code> component.
+				</p>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Theme toggle</h3>
+				<ThemeToggle />
+			</div>
+		</section>
+
+		<!-- BUILD MODE -->
+		<section id="build" class="scroll-mt-24 space-y-16">
+			<h2>Build mode</h2>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Section</h3>
+				<div class="rounded-lg border border-dashed border-line bg-paper/50 py-16 text-center">
+					<p class="text-body text-ink-soft">Section</p>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Grid</h3>
+				<div class="grid grid-cols-12 gap-6">
+					<div class="col-span-12 rounded-lg border border-line bg-paper p-6 md:col-span-4">
+						<p class="text-body text-ink-soft">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua.
+						</p>
+					</div>
+					<div class="col-span-12 rounded-lg border border-line bg-paper p-6 md:col-span-4">
+						<p class="text-body text-ink-soft">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua.
+						</p>
+					</div>
+					<div class="col-span-12 rounded-lg border border-line bg-paper p-6 md:col-span-4">
+						<p class="text-body text-ink-soft">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Content wrap</h3>
+				<div class="max-w-2xl space-y-0 border-t border-line">
+					{faqs.map((f) => <Accordion summary={f.q}>{f.a}</Accordion>)}
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Spacer</h3>
+				<div class="rounded-lg border border-dashed border-line">
+					<div class="h-16 bg-paper/50"></div>
+				</div>
+			</div>
+
+			<div class="space-y-8 border-t border-line pt-8">
+				<h3>Border</h3>
+				<hr class="border-line" />
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+
+	<script>
+		import '@phosphor-icons/webcomponents/PhCaretDown';
+		import '@phosphor-icons/webcomponents/PhList';
+		import '@phosphor-icons/webcomponents/PhX';
+		import '@phosphor-icons/webcomponents/PhArrowUpRight';
+		import '@phosphor-icons/webcomponents/PhPlay';
+		import '@phosphor-icons/webcomponents/PhPause';
+		import '@phosphor-icons/webcomponents/PhArrowLeft';
+		import '@phosphor-icons/webcomponents/PhArrowRight';
+		import '@phosphor-icons/webcomponents/PhStar';
+		import '@phosphor-icons/webcomponents/PhSun';
+		import '@phosphor-icons/webcomponents/PhMoon';
+	</script>
+</Layout>

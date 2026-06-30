@@ -1,0 +1,99 @@
+---
+interface Tab {
+	label: string;
+	id: string;
+}
+
+interface Props {
+	id: string;
+	tabs: Tab[];
+	orientation?: 'horizontal' | 'vertical';
+	class?: string;
+}
+
+const { id, tabs, orientation = 'horizontal', class: className } = Astro.props;
+const isVertical = orientation === 'vertical';
+---
+
+<div
+	class:list={[
+		'gap-6',
+		isVertical ? 'grid md:grid-cols-[12rem_1fr]' : 'space-y-6',
+		className,
+	]}
+	data-tabs={id}
+>
+	<div
+		role="tablist"
+		aria-orientation={orientation}
+		class:list={[
+			'flex gap-1',
+			isVertical ? 'flex-col' : 'flex-wrap border-b border-line',
+		]}
+	>
+		{
+			tabs.map((tab, i) => (
+				<button
+					type="button"
+					role="tab"
+					id={`${id}-tab-${tab.id}`}
+					aria-controls={`${id}-panel-${tab.id}`}
+					aria-selected={i === 0 ? 'true' : 'false'}
+					data-tab={tab.id}
+					class:list={[
+						'cursor-pointer px-4 py-2 text-body font-medium transition-colors',
+						isVertical
+							? 'rounded-lg text-left hover:bg-paper data-[active=true]:bg-paper data-[active=true]:text-brand'
+							: 'border-b-2 border-transparent -mb-px hover:text-brand data-[active=true]:border-brand data-[active=true]:text-brand',
+					]}
+					data-active={i === 0 ? 'true' : 'false'}
+				>
+					{tab.label}
+				</button>
+			))
+		}
+	</div>
+
+	<div>
+		{
+			tabs.map((tab, i) => (
+				<div
+					role="tabpanel"
+					id={`${id}-panel-${tab.id}`}
+					aria-labelledby={`${id}-tab-${tab.id}`}
+					hidden={i !== 0}
+					data-tab-panel={tab.id}
+					class="text-body text-ink-soft"
+				>
+					<slot name={tab.id} />
+				</div>
+			))
+		}
+	</div>
+</div>
+
+<script>
+	function initTabs(root: ParentNode = document) {
+		root.querySelectorAll<HTMLElement>('[data-tabs]').forEach((tabsEl) => {
+			const triggers = tabsEl.querySelectorAll<HTMLButtonElement>('[data-tab]');
+			const panels = tabsEl.querySelectorAll<HTMLElement>('[data-tab-panel]');
+
+			triggers.forEach((trigger) => {
+				trigger.addEventListener('click', () => {
+					const id = trigger.getAttribute('data-tab');
+					triggers.forEach((t) => {
+						const active = t === trigger;
+						t.setAttribute('aria-selected', String(active));
+						t.dataset.active = String(active);
+					});
+					panels.forEach((panel) => {
+						panel.hidden = panel.getAttribute('data-tab-panel') !== id;
+					});
+				});
+			});
+		});
+	}
+
+	initTabs();
+	document.addEventListener('astro:page-load', () => initTabs());
+</script>

@@ -1,0 +1,65 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'primary' | 'secondary' | 'ghost' | 'link';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props extends HTMLAttributes<'button'>, HTMLAttributes<'a'> {
+	/** Render as an <a> when set; otherwise renders a <button>. */
+	href?: string;
+	variant?: Variant;
+	size?: Size;
+}
+
+const { href, variant = 'primary', size = 'md', class: className, 'aria-label': ariaLabelProp, ...rest } = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const hasIconLeft = Astro.slots.has('icon-left');
+const hasIconRight = Astro.slots.has('icon-right');
+
+const isLink = variant === 'link';
+
+const baseButton =
+	'inline-flex items-center justify-center gap-[0.5em] rounded-lg border border-transparent font-semibold leading-none whitespace-nowrap cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none';
+
+const baseLink =
+	'inline-flex items-center gap-[0.5em] font-normal underline underline-offset-[0.2em] decoration-[0.1em] text-brand transition-colors hover:text-brand-dark';
+
+const sizes: Record<Size, string> = {
+	sm: 'px-3 py-1.5 text-sm',
+	md: 'px-4 py-2 text-base',
+	lg: 'px-6 py-3 text-lg',
+};
+
+const variants: Record<Variant, string> = {
+	primary: 'bg-brand text-white hover:bg-brand-dark',
+	secondary: 'border-current text-brand hover:bg-brand/10',
+	ghost: 'hover:bg-current/10',
+	link: '',
+};
+
+const classes = [
+	isLink ? baseLink : baseButton,
+	!isLink && sizes[size],
+	variants[variant],
+	className,
+]
+	.filter(Boolean)
+	.join(' ');
+
+// Mirror the label text into aria-label (tags stripped). An explicit
+// aria-label prop always wins so callers can override it.
+const labelHtml = await Astro.slots.render('default');
+const labelText = labelHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+const ariaLabel = ariaLabelProp ?? (labelText || undefined);
+
+// Icons sit inline with the label and scale with it (em-based). Works for raw
+// <svg> and <ph-*> web components (which default to size="1em"/currentColor).
+const iconClass = 'inline-flex shrink-0 text-[1.25em] [&_svg]:size-[1em]';
+---
+
+<Tag class={classes} href={href} aria-label={ariaLabel} {...rest}>
+	{hasIconLeft && <span class={iconClass} aria-hidden="true"><slot name="icon-left" /></span>}
+	<span set:html={labelHtml} />
+	{hasIconRight && <span class={iconClass} aria-hidden="true"><slot name="icon-right" /></span>}
+</Tag>

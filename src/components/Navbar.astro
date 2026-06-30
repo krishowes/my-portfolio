@@ -1,0 +1,67 @@
+---
+import Button from './Button.astro';
+
+interface NavLink {
+	label: string;
+	href: string;
+}
+
+interface Props {
+	brand?: string;
+	links?: NavLink[];
+	cta?: NavLink;
+}
+
+const {
+	brand = 'Starter',
+	links = [
+		{ label: 'Style guide', href: '/styles' },
+		{ label: 'Components', href: '/components' },
+		{ label: 'Layouts', href: '/basic-layouts' },
+		{ label: 'Inspired', href: '/inspired-layouts' },
+		{ label: 'Docs', href: '#' },
+	],
+	cta = { label: 'Get started', href: '#' },
+} = Astro.props;
+---
+
+<header class="sticky top-0 z-20 border-b border-line bg-white/85 backdrop-blur">
+	<nav class="container-page flex items-center justify-between gap-4 py-4">
+		<a href="/" class="text-body-lg font-semibold">{brand}</a>
+
+		<!-- Desktop links -->
+		<div class="hidden items-center gap-8 md:flex">
+			{
+				links.map((l) => (
+					<a href={l.href} class="text-body-sm text-ink-soft transition-colors hover:text-brand">
+						{l.label}
+					</a>
+				))
+			}
+			<Button size="sm" href={cta.href}>{cta.label}</Button>
+		</div>
+
+		<!-- Mobile menu (dependency-free via <details>) -->
+		<details class="group md:hidden">
+			<summary
+				class="flex cursor-pointer list-none items-center [&::-webkit-details-marker]:hidden"
+				aria-label="Toggle menu"
+			>
+				<ph-list class="text-2xl group-open:hidden" weight="bold"></ph-list>
+				<ph-x class="hidden text-2xl group-open:block" weight="bold"></ph-x>
+			</summary>
+			<div class="absolute inset-x-0 top-full border-b border-line bg-white">
+				<div class="container-page flex flex-col gap-1 py-4">
+					{
+						links.map((l) => (
+							<a href={l.href} class="py-2 text-body text-ink-soft transition-colors hover:text-brand">
+								{l.label}
+							</a>
+						))
+					}
+					<Button size="sm" href={cta.href} class="mt-2 self-start">{cta.label}</Button>
+				</div>
+			</div>
+		</details>
+	</nav>
+</header>

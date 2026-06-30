@@ -1,0 +1,151 @@
+/*
+ * Maison Neue — standard family (Extended cuts intentionally excluded).
+ * Weights normalized onto the conventional 100–900 ladder. Note this
+ * typeface's ExtraThin is lighter than its Thin, so ExtraThin = 100, Thin = 200.
+ * Each weight ships an upright and an italic; the browser only downloads the
+ * faces actually used on a page.
+ */
+
+/* ExtraThin — 100 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueExtraThin.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueExtraThinItalic.woff2') format('woff2');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Thin — 200 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueThin.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueThinItalic.woff2') format('woff2');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Light — 300 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueLight.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueLightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Book — 400 (body default) */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueBook.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueBookItalic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Medium — 500 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueMedium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueMediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Demi — 600 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueDemi.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueDemiItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Bold — 700 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueBold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueBoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ExtraBold — 800 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueExtraBoldItalic.woff2') format('woff2');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Black — 900 */
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueBlack.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Maison Neue';
+  src: url('/fonts/MaisonNeueBlackItalic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}

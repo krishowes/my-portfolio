@@ -1,0 +1,29 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['overflow-x-auto rounded-lg border border-line', className]}>
+	<table class="w-full min-w-[32rem] border-collapse text-left text-body">
+		<slot />
+	</table>
+</div>
+
+<style>
+	table :global(thead th) {
+		border-bottom: 1px solid var(--color-line);
+		padding: 0.75rem 1rem;
+		font-weight: 600;
+	}
+	table :global(tbody td) {
+		border-bottom: 1px solid var(--color-line);
+		padding: 0.75rem 1rem;
+		color: var(--color-ink-soft);
+	}
+	table :global(tbody tr:last-child td) {
+		border-bottom: none;
+	}
+</style>

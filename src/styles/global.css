@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* ─── MAST design language, ported to Tailwind v4 tokens ──────────────────────
+   These @theme variables generate utilities automatically:
+     colors  → bg-brand, text-ink, border-line, …
+     type    → text-h1 … text-h6, text-body, text-eyebrow, …
+     font    → font-sans (Maison Neue)
+   ───────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Typeface — Maison Neue drives everything (see fonts.css) */
+  --font-sans: "Maison Neue", system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  /* Monospace — used for eyebrows / labels (Kris Howes v2 design) */
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code",
+    Menlo, Consolas, monospace;
+
+  /* Palette (MAST) */
+  --color-brand: #d14424;
+  --color-brand-dark: #9c331b;
+  --color-ink: #1d1c1a;
+  --color-ink-soft: #292825;
+  --color-paper: #f0eee6;
+  --color-line: #cccabf;
+  --color-line-strong: #474641;
+  --color-accent-yellow: #f8d47a;
+  --color-accent-blue: #0073e6;
+
+  /* Kris Howes v2 portfolio palette (from Figma) */
+  --color-coral: #fe805f;
+  --color-cocoa: #473c3c;
+  --color-cocoa-dark: #332a2a;
+  --color-page: #eef3e7;
+  --color-card-paper: #f9fdf2;
+  --color-card-dark: #444444;
+  --color-card-yellow: #ffcc47;
+  --color-card-blue: #2f3e77;
+
+  /* Fluid type scale (MAST) — interpolates between 20rem and 90rem viewport */
+  --text-eyebrow: clamp(0.7rem, calc(0.7rem + 0.1 * (100vw - 20rem) / 70), 0.8rem);
+  --text-eyebrow--line-height: 1.2;
+  --text-body-sm: clamp(0.8rem, calc(0.8rem + 0.1 * (100vw - 20rem) / 70), 0.9rem);
+  --text-body-sm--line-height: 1.5;
+  --text-body: clamp(0.9rem, calc(0.9rem + 0.1 * (100vw - 20rem) / 70), 1rem);
+  --text-body--line-height: 1.6;
+  --text-body-lg: clamp(1.1rem, calc(1.1rem + 0.15 * (100vw - 20rem) / 70), 1.25rem);
+  --text-body-lg--line-height: 1.5;
+  --text-body-xl: clamp(1.2rem, calc(1.2rem + 0.3 * (100vw - 20rem) / 70), 1.5rem);
+  --text-body-xl--line-height: 1.4;
+  --text-h6: clamp(0.9rem, calc(0.9rem + 0.1 * (100vw - 20rem) / 70), 1rem);
+  --text-h6--line-height: 1.4;
+  --text-h5: clamp(1.1rem, calc(1.1rem + 0.1 * (100vw - 20rem) / 70), 1.2rem);
+  --text-h5--line-height: 1.4;
+  --text-h4: clamp(1.3rem, calc(1.3rem + 0.2 * (100vw - 20rem) / 70), 1.5rem);
+  --text-h4--line-height: 1.4;
+  --text-h3: clamp(1.5rem, calc(1.5rem + 0.8 * (100vw - 20rem) / 70), 2.3rem);
+  --text-h3--line-height: 1.2;
+  --text-h2: clamp(2rem, calc(2rem + 1.8 * (100vw - 20rem) / 70), 3.8rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h1: clamp(2.8rem, calc(2.8rem + 2.7 * (100vw - 20rem) / 70), 5.5rem);
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.02em;
+
+  /* Container side gutter (MAST) */
+  --spacing-gutter: 6vw;
+}
+
+/* MAST-style page container: capped width + fluid side gutter.
+   Usage: <div class="container-page"> … </div> */
+@utility container-page {
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+/* Semantic HTML gets the MAST look out of the box — override with utilities anytime */
+@layer base {
+  body {
+    background-color: white;
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 { @apply text-h1; }
+  h2 { @apply text-h2; }
+  h3 { @apply text-h3; }
+  h4 { @apply text-h4; }
+  h5 { @apply text-h5; }
+  h6 { @apply text-h6; }
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-weight: 500;
+  }
+  code {
+    border-radius: 0.25rem;
+    background-color: var(--color-paper);
+    padding: 0.1em 0.4em;
+    font-size: 0.9em;
+  }
+}
+
+/* X-shaped mask — reveals an image through a large rounded "X".
+   Used by the project "More info" detail panel. */
+@utility x-image-mask {
+  -webkit-mask-image: url("/figma/x-mask.svg");
+  mask-image: url("/figma/x-mask.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-marquee {
+  animation: marquee var(--marquee-duration, 30s) linear infinite;
+}
+
+/* Basic dark mode swap for theme toggle demo */
+html.dark body {
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+}
+html.dark .border-line {
+  border-color: var(--color-line-strong);
+}
+html.dark .bg-white {
+  background-color: var(--color-ink-soft);
+}
+html.dark .bg-paper {
+  background-color: var(--color-ink);
+}

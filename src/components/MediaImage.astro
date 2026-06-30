@@ -1,0 +1,23 @@
+---
+type Ratio = 'inherit' | '16x9' | '4x3' | '1x1';
+
+interface Props {
+	src: string;
+	alt: string;
+	ratio?: Ratio;
+	class?: string;
+}
+
+const { src, alt, ratio = 'inherit', class: className } = Astro.props;
+
+const ratios: Record<Ratio, string | undefined> = {
+	inherit: undefined,
+	'16x9': 'aspect-video',
+	'4x3': 'aspect-[4/3]',
+	'1x1': 'aspect-square',
+};
+---
+
+<figure class:list={['overflow-hidden rounded-lg bg-paper', ratios[ratio], className]}>
+	<img src={src} alt={alt} class="size-full object-cover" loading="lazy" />
+</figure>

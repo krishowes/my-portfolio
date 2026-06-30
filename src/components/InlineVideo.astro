@@ -1,0 +1,78 @@
+---
+interface Props {
+	poster: string;
+	src: string;
+	alt?: string;
+	class?: string;
+}
+
+const { poster, src, alt = '', class: className } = Astro.props;
+const videoId = `video-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+	class:list={['group relative aspect-video overflow-hidden rounded-lg bg-ink', className]}
+	data-inline-video={videoId}
+>
+	<img src={poster} alt={alt} class="absolute inset-0 size-full object-cover" loading="lazy" />
+	<video
+		class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-300 data-[playing=true]:opacity-100"
+		muted
+		loop
+		playsinline
+		preload="none"
+		data-video={videoId}
+	>
+		<source src={src} type="video/mp4" />
+	</video>
+	<button
+		type="button"
+		class="absolute right-4 bottom-4 flex size-12 cursor-pointer items-center justify-center rounded-full bg-white/90 text-ink shadow-md transition-colors hover:bg-white group-data-[playing=true]:opacity-0"
+		data-video-toggle={videoId}
+		aria-label="Play video"
+	>
+		<ph-play class="text-xl" weight="fill" data-video-play-icon></ph-play>
+		<ph-pause class="hidden text-xl" weight="fill" data-video-pause-icon></ph-pause>
+	</button>
+</div>
+
+<script>
+	import '@phosphor-icons/webcomponents/PhPlay';
+	import '@phosphor-icons/webcomponents/PhPause';
+</script>
+
+<script>
+	function initInlineVideos(root: ParentNode = document) {
+		root.querySelectorAll<HTMLElement>('[data-inline-video]').forEach((wrapper) => {
+			const id = wrapper.getAttribute('data-inline-video');
+			const video = wrapper.querySelector<HTMLVideoElement>(`[data-video="${id}"]`);
+			const toggle = wrapper.querySelector<HTMLButtonElement>(`[data-video-toggle="${id}"]`);
+			const playIcon = toggle?.querySelector('[data-video-play-icon]');
+			const pauseIcon = toggle?.querySelector('[data-video-pause-icon]');
+			if (!video || !toggle) return;
+
+			const setPlaying = (playing: boolean) => {
+				wrapper.dataset.playing = String(playing);
+				video.dataset.playing = String(playing);
+				playIcon?.classList.toggle('hidden', playing);
+				pauseIcon?.classList.toggle('hidden', !playing);
+				toggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+			};
+
+			toggle.addEventListener('click', async () => {
+				if (video.paused) {
+					await video.play();
+					setPlaying(true);
+				} else {
+					video.pause();
+					setPlaying(false);
+				}
+			});
+
+			video.addEventListener('ended', () => setPlaying(false));
+		});
+	}
+
+	initInlineVideos();
+	document.addEventListener('astro:page-load', () => initInlineVideos());
+</script>

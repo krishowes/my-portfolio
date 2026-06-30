@@ -1,0 +1,57 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+	id: string;
+	triggerLabel?: string;
+	class?: string;
+}
+
+const { id, triggerLabel = 'Open modal', class: className } = Astro.props;
+const dialogId = `${id}-dialog`;
+---
+
+<div class:list={['inline-block', className]} data-modal={id}>
+	<Button type="button" data-modal-open={dialogId}>{triggerLabel}</Button>
+
+	<dialog
+		id={dialogId}
+		class="relative m-auto w-[min(100%,32rem)] rounded-lg border border-line bg-white p-0 shadow-xl backdrop:bg-ink/40 open:flex open:flex-col"
+	>
+		<div class="space-y-4 p-6 md:p-8">
+			<slot />
+		</div>
+		<button
+			type="button"
+			data-modal-close={dialogId}
+			class="absolute top-4 right-4 flex size-8 cursor-pointer items-center justify-center rounded-md text-ink-soft transition-colors hover:bg-paper hover:text-ink"
+			aria-label="Close modal"
+		>
+			<ph-x class="text-xl" weight="bold"></ph-x>
+		</button>
+	</dialog>
+</div>
+
+<script>
+	import '@phosphor-icons/webcomponents/PhX';
+</script>
+
+<script>
+	function initModals(root: ParentNode = document) {
+		root.querySelectorAll<HTMLDialogElement>('dialog[id]').forEach((dialog) => {
+			const id = dialog.id;
+			root.querySelectorAll<HTMLElement>(`[data-modal-open="${id}"]`).forEach((trigger) => {
+				trigger.addEventListener('click', () => dialog.showModal());
+			});
+			root.querySelectorAll<HTMLElement>(`[data-modal-close="${id}"]`).forEach((btn) => {
+				btn.addEventListener('click', () => dialog.close());
+			});
+			dialog.addEventListener('click', (e) => {
+				if (e.target === dialog) dialog.close();
+			});
+		});
+	}
+
+	initModals();
+	document.addEventListener('astro:page-load', () => initModals());
+</script>

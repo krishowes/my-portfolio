@@ -1,0 +1,61 @@
+---
+interface Pill {
+	label: string;
+	href?: string;
+	active?: boolean;
+}
+
+interface Props {
+	pills?: Pill[];
+}
+
+const {
+	pills = [
+		{ label: 'Primley Park', href: '#project-1' },
+		{ label: 'Opus 4', href: '#project-2' },
+		{ label: 'Fly', href: '#project-3' },
+		{ label: 'G+L', href: '#project-4' },
+		{ label: 'CAAF', active: true },
+		{ label: 'MapleLeaf' },
+		{ label: 'Pack' },
+		{ label: 'Shotgun' },
+		{ label: 'Spike' },
+		{ label: 'JLA' },
+		{ label: 'Firefly' },
+	],
+} = Astro.props;
+---
+
+<nav
+	aria-label="Project navigation"
+	class="pointer-events-none fixed top-1/2 right-4 z-20 hidden -translate-y-1/2 lg:block"
+>
+	<div
+		class="pointer-events-auto flex flex-col items-end gap-[3px] rounded-[50px] bg-[rgba(217,217,217,0.5)] p-[3px] backdrop-blur-[7.5px]"
+	>
+		{
+			pills.map((p) => (
+				<a
+					href={p.href ?? '#'}
+					class:list={[
+						'group flex items-center justify-end overflow-hidden rounded-[20px] px-[5px] py-[5px] transition-all duration-300 hover:w-auto hover:px-3',
+						p.active ? 'w-[34px] bg-cream' : 'w-[20px] bg-cocoa-dark',
+					]}
+					aria-label={p.label}
+				>
+					<span
+						class:list={[
+							'max-w-0 overflow-hidden font-mono text-[0.7rem] font-medium tracking-[0.12em] whitespace-nowrap uppercase opacity-0 transition-all duration-300 group-hover:max-w-[180px] group-hover:pr-1 group-hover:opacity-100',
+							p.active ? 'text-cocoa-dark' : 'text-coral',
+						]}
+					>
+						{p.label}
+					</span>
+					<span
+						class:list={['size-2 shrink-0 rounded-full', p.active ? 'bg-cocoa-dark' : 'bg-coral']}
+					></span>
+				</a>
+			))
+		}
+	</div>
+</nav>

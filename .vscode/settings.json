@@ -1,0 +1,15 @@
+{
+  "files.associations": {
+    "*.astro": "astro"
+  },
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
+  },
+  "tailwindCSS.includeLanguages": {
+    "astro": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["class:list\\s*=\\s*\\{([^}]*)\\}", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
+    ["class:list\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]", "([^\\s]+)"]
+  ]
+}

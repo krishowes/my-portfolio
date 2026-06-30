@@ -1,0 +1,27 @@
+---
+interface Props {
+	duration?: string;
+	gap?: string;
+	pauseOnHover?: boolean;
+	class?: string;
+}
+
+const { duration = '30s', gap = '1.5rem', pauseOnHover = true, class: className } = Astro.props;
+---
+
+<div
+	class:list={['overflow-hidden', pauseOnHover && 'group', className]}
+	data-marquee
+>
+	<div
+		class="flex w-max animate-marquee group-hover:[animation-play-state:paused]"
+		style={`--marquee-duration: ${duration}; --marquee-gap: ${gap}; gap: var(--marquee-gap);`}
+	>
+		<div class="flex shrink-0" style={`gap: var(--marquee-gap);`}>
+			<slot />
+		</div>
+		<div class="flex shrink-0" style={`gap: var(--marquee-gap);`} aria-hidden="true">
+			<slot />
+		</div>
+	</div>
+</div>

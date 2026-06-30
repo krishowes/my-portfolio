@@ -1,0 +1,330 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import Footer from '../components/Footer.astro';
+import Section from '../components/Section.astro';
+import CoverSection from '../components/CoverSection.astro';
+import Button from '../components/Button.astro';
+import FeatureItem from '../components/FeatureItem.astro';
+import ImageSlider from '../components/ImageSlider.astro';
+import Tabs from '../components/Tabs.astro';
+import MediaImage from '../components/MediaImage.astro';
+
+const cdn = 'https://cdn.prod.website-files.com/6970bf7914853738a0b435bf/6970bf7b14853738a0b436';
+
+const heroSlides = [
+	{ src: `${cdn}8c_post5.webp`, alt: 'Calm waters at dawn' },
+	{ src: `${cdn}8f_post3.webp`, alt: 'Sailboat on open water' },
+	{ src: `${cdn}90_post2.webp`, alt: 'Harbour at sunset' },
+	{ src: `${cdn}8e_post1.webp`, alt: 'Coastal landscape' },
+	{ src: `${cdn}8d_post6.webp`, alt: 'Mist over the sea' },
+];
+
+const burdenItems = [
+	'The fatigue of constantly context-switching between inconsistent approaches.',
+	'The frustration of beautiful ideas compromised by clunky execution.',
+	'The weight of maintaining complexity that adds nothing to the final experience.',
+	'The nagging sense that there should be a more graceful way.',
+];
+
+const subtractionTabs = [
+	{
+		id: 'distillation',
+		label: 'Distillation',
+		title: 'Distillation Over Addition',
+		body: "True craft lies not in accumulating features but in distilling to essence. Every line of code, every class, every component earns its place not through cleverness but through necessity. Like a master craftsman who knows which tool to reach for without thinking, you develop an intuition for what belongs and what doesn't.",
+	},
+	{
+		id: 'rhythm',
+		label: 'Rhythm',
+		title: 'Rhythm Over Rules',
+		body: "The best systems don't dictate—they dance. They establish a rhythm that your hands remember, patterns that feel inevitable once learned. Your workflow becomes fluid, your thinking becomes clear, your energy flows toward the work that matters.",
+	},
+	{
+		id: 'foundation',
+		label: 'Foundation',
+		title: 'Foundation Over Fashion',
+		body: 'While others chase trends, you build bedrock. You understand that true innovation comes from having a solid base to launch from, not from reinventing the ground beneath your feet with every project.',
+	},
+];
+---
+
+<Layout title="Inspired Layouts — Astro Starter">
+	<SiteNav />
+
+	<main id="main" tabindex="-1">
+		<!-- Hero -->
+		<header class="bg-brand pb-12 text-white md:pb-16 lg:pb-20">
+			<div class="container-page space-y-10 pt-12 md:space-y-14 md:pt-16 lg:space-y-16 lg:pt-20">
+				<div class="grid grid-cols-12 gap-8">
+					<div class="col-span-12 space-y-6 lg:col-span-9">
+						<p class="text-eyebrow uppercase tracking-wide text-paper/80">The Steady Center</p>
+						<h1>In turbulent waters, what matters most is what holds you steady</h1>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-12 items-end gap-8">
+					<div class="col-span-12 space-y-6 lg:col-span-6">
+						<p class="text-body-lg text-paper/90">
+							Every ship needs its mast—not because it's complex or clever, but because it's
+							essential. It stands quietly at the center, bearing the fundamentals right.
+						</p>
+					</div>
+					<div class="col-span-12 lg:col-span-6 lg:flex lg:justify-end">
+						<Button
+							href="#problem"
+							class="border-white text-white hover:bg-white/15"
+							variant="secondary"
+						>
+							Begin with Purpose
+							<ph-arrow-down slot="icon-right" weight="bold"></ph-arrow-down>
+						</Button>
+					</div>
+				</div>
+
+				<ImageSlider id="hero-gallery" images={heroSlides} autoplayMs={4000} />
+			</div>
+		</header>
+
+		<!-- The Weight of Expectations -->
+		<Section id="problem">
+			<div class="container-page space-y-12 md:space-y-16">
+				<div class="mx-auto max-w-3xl space-y-4 text-center">
+					<p class="text-eyebrow uppercase tracking-wide text-brand">The Weight of Expectations</p>
+					<h2>The burden of building without compass</h2>
+				</div>
+
+				<hr class="border-line" />
+
+				<div class="grid grid-cols-12 gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-4 lg:col-span-5">
+						<p class="text-body-lg text-ink-soft">
+							There's a particular exhaustion that comes from swimming against endless
+							currents of complexity. You know the feeling—when every project feels like
+							starting from scratch, when simple intentions become tangled in unnecessary
+							complications, when you find yourself building the same foundations over and
+							over.
+						</p>
+						<p class="text-body-lg text-ink-soft">
+							It's not about the tools themselves. It's about the mental load, the creative
+							energy spent on mechanics instead of meaning.
+						</p>
+					</div>
+					<div class="col-span-12 lg:col-span-6 lg:col-start-7">
+						<div class="space-y-6">
+							{
+								burdenItems.map((item) => (
+									<FeatureItem>
+										<ph-minus slot="icon" class="text-xl" weight="bold" />
+										{item}
+									</FeatureItem>
+								))
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- The Moment of Clarity -->
+		<CoverSection src={`${cdn}8d_post6.webp`} alt="Soft light through fog">
+			<div class="mx-auto max-w-3xl space-y-6 text-center">
+				<p class="text-eyebrow uppercase tracking-wide text-paper/80">The Moment of Clarity</p>
+				<h2>When noise fades, essence emerges</h2>
+				<div class="space-y-4 text-body-lg text-paper/90">
+					<p>
+						But in those rare moments of clarity—perhaps late at night when the world is
+						quiet, or in the pause before coffee kicks in—you glimpse something different.
+						A way of working that feels like breathing. Where the structure serves the vision
+						instead of constraining it.
+					</p>
+					<p>
+						This isn't about revolutionary technology or groundbreaking innovation. It's
+						about understanding what matters and letting everything else fall away. It's
+						about finding your rhythm and building tools that move with it rather than
+						against it.
+					</p>
+				</div>
+			</div>
+		</CoverSection>
+
+		<!-- Split: portrait image + copy -->
+		<Section theme="paper">
+			<div class="container-page">
+				<div class="grid grid-cols-12 items-center gap-8 lg:gap-12">
+					<div class="col-span-12 md:col-span-5">
+						<MediaImage
+							src={`${cdn}91_post4.webp`}
+							alt="Figure in contemplation"
+							ratio="inherit"
+							class="aspect-[3/4] overflow-hidden rounded-lg"
+						/>
+					</div>
+					<div class="col-span-12 space-y-4 md:col-span-6 md:col-start-7">
+						<p class="text-eyebrow uppercase tracking-wide text-brand">The Art of Subtraction</p>
+						<h2>What you don't build is as important as what you do</h2>
+						<p class="text-body-lg text-ink-soft">
+							True craft lies not in accumulating features but in distilling to essence.
+							Every line of code, every class, every component earns its place not through
+							cleverness but through necessity.
+						</p>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Tabs: Distillation / Rhythm / Foundation -->
+		<Section>
+			<div class="container-page space-y-10 md:space-y-14">
+				<div class="mx-auto max-w-3xl space-y-4 text-center">
+					<p class="text-eyebrow uppercase tracking-wide text-brand">The Art of Subtraction</p>
+					<h2>What you don't build is as important as what you do</h2>
+				</div>
+
+				<Tabs
+					id="subtraction-tabs"
+					tabs={subtractionTabs.map((t) => ({ label: t.label, id: t.id }))}
+				>
+					<div slot="distillation" class="mx-auto max-w-2xl space-y-4 py-4 text-center md:py-8">
+						<h3>{subtractionTabs[0].title}</h3>
+						<p class="text-body-lg text-ink-soft">{subtractionTabs[0].body}</p>
+					</div>
+					<div slot="rhythm" class="mx-auto max-w-2xl space-y-4 py-4 text-center md:py-8">
+						<h3>{subtractionTabs[1].title}</h3>
+						<p class="text-body-lg text-ink-soft">{subtractionTabs[1].body}</p>
+					</div>
+					<div slot="foundation" class="mx-auto max-w-2xl space-y-4 py-4 text-center md:py-8">
+						<h3>{subtractionTabs[2].title}</h3>
+						<p class="text-body-lg text-ink-soft">{subtractionTabs[2].body}</p>
+					</div>
+				</Tabs>
+			</div>
+		</Section>
+
+		<!-- The Quiet Confidence -->
+		<Section theme="paper">
+			<div class="container-page space-y-12 md:space-y-16">
+				<div class="max-w-3xl space-y-4">
+					<p class="text-eyebrow uppercase tracking-wide text-brand">The Quiet Confidence</p>
+					<h2>Those who build with purpose recognize each other</h2>
+				</div>
+
+				<div class="grid grid-cols-12 gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-4 md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8">
+						<h3 class="text-h4">Community of Practice</h3>
+						<p class="text-body-lg text-ink-soft">
+							There's a particular satisfaction that comes from working with tools that
+							understand you. It's the difference between fighting your way through a project
+							and flowing through it. Others notice—the clarity in your work, the speed of
+							your delivery, the calm confidence in your process.
+						</p>
+						<p class="text-body text-ink-soft">
+							The recognition comes not from the complexity you manage, but from the
+							complexity you avoid.
+						</p>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-12 gap-4 sm:gap-6">
+					<div class="col-span-6 sm:col-span-3">
+						<MediaImage src={`${cdn}a5_post9.webp`} alt="" ratio="4x3" class="rounded-lg" />
+					</div>
+					<div class="col-span-6 sm:col-span-3">
+						<MediaImage src={`${cdn}a6_post8.webp`} alt="" ratio="4x3" class="rounded-lg" />
+					</div>
+					<div class="col-span-6 sm:col-span-3">
+						<MediaImage src={`${cdn}a2_post10.webp`} alt="" ratio="4x3" class="rounded-lg" />
+					</div>
+					<div class="col-span-6 sm:col-span-3">
+						<MediaImage src={`${cdn}a4_post7.webp`} alt="" ratio="4x3" class="rounded-lg" />
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- The Expanding Horizon -->
+		<Section>
+			<div class="container-page">
+				<div class="grid grid-cols-12 items-center gap-8 lg:gap-12">
+					<div class="col-span-12 md:col-span-5">
+						<MediaImage
+							src={`${cdn}a7_post12.webp`}
+							alt="Wide horizon"
+							ratio="3x4"
+							class="max-w-md"
+						/>
+					</div>
+					<div class="col-span-12 space-y-4 md:col-span-6 md:col-start-7">
+						<p class="text-eyebrow uppercase tracking-wide text-brand">The Expanding Horizon</p>
+						<h2>When the foundation is right, anything becomes possible</h2>
+						<p class="text-body-lg text-ink-soft">
+							With the mechanics handled, your mind is free to wander into more interesting
+							territory. You're not debugging basic layouts or wrestling with inconsistent
+							patterns. You're exploring ideas, refining experiences, solving problems that
+							matter.
+						</p>
+					</div>
+				</div>
+			</div>
+		</Section>
+
+		<!-- Scale Without Strain -->
+		<CoverSection src={`${cdn}a9_post11.webp`} alt="Vast landscape">
+			<div class="mx-auto max-w-3xl text-center">
+				<p class="text-eyebrow mb-6 uppercase tracking-wide text-paper/80">The Expanding Horizon</p>
+				<blockquote class="text-h3 font-medium leading-snug md:text-h2">
+					Scale Without Strain — Whether you're crafting something intimate and personal or
+					building at enterprise scale, the same principles apply. Good bones support any
+					structure. Clear thinking scales infinitely.
+				</blockquote>
+			</div>
+		</CoverSection>
+
+		<!-- The Practice -->
+		<Section theme="paper">
+			<div class="container-page space-y-12 md:space-y-16">
+				<div class="mx-auto max-w-3xl space-y-4 text-center">
+					<p class="text-eyebrow uppercase tracking-wide text-brand">The Practice</p>
+					<h2>Mastery lives in the daily discipline of choosing better</h2>
+					<p class="text-body-lg text-ink-soft">
+						This isn't about learning a new system—it's about remembering what you already
+						know about good work. It's about choosing tools that align with your values,
+						processes that support your thinking, and foundations that grow stronger with
+						use.
+					</p>
+				</div>
+
+				<div class="grid grid-cols-12 gap-8 lg:gap-12">
+					<div class="col-span-12 space-y-3 md:col-span-6">
+						<h3 class="text-h4">The Daily Choice</h3>
+						<p class="text-body text-ink-soft">
+							Every project is an opportunity to build with intention. Every line of code is a
+							chance to choose signal over noise. Every decision is a moment to ask: does this
+							serve the vision or just fill space?
+						</p>
+					</div>
+					<div class="col-span-12 space-y-3 md:col-span-6">
+						<h3 class="text-h4">The Compound Effect</h3>
+						<p class="text-body text-ink-soft">
+							Small improvements in your daily practice compound into dramatic differences in
+							your work. Better tools lead to clearer thinking. Clearer thinking leads to
+							better solutions. Better solutions lead to work that matters.
+						</p>
+					</div>
+				</div>
+
+				<div class="grid gap-4 sm:grid-cols-2">
+					<MediaImage src={`${cdn}a8_post13.webp`} alt="" ratio="16x9" />
+					<MediaImage src={`${cdn}8f_post3.webp`} alt="" ratio="16x9" />
+				</div>
+			</div>
+		</Section>
+	</main>
+
+	<Footer />
+
+	<script>
+		import '@phosphor-icons/webcomponents/PhArrowDown';
+		import '@phosphor-icons/webcomponents/PhMinus';
+	</script>
+</Layout>
