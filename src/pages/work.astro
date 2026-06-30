@@ -4,26 +4,20 @@ import PortfolioNav from '../components/home/PortfolioNav.astro';
 import PortfolioFooter from '../components/home/PortfolioFooter.astro';
 import MiniMap from '../components/home/MiniMap.astro';
 import ProjectCard from '../components/home/ProjectCard.astro';
-
-const projects = [
-	{ id: 'project-1', theme: 'dark' as const },
-	{ id: 'project-2', theme: 'paper' as const },
-	{ id: 'project-3', theme: 'yellow' as const },
-	{ id: 'project-4', theme: 'blue' as const },
-];
+import { workProjects } from '../data/work-projects';
 ---
 
 <Layout title="Work — Kris Howes">
 	<div class="min-h-screen bg-page font-sans text-cocoa">
 		<PortfolioNav />
-		<MiniMap />
+		<MiniMap projects={workProjects} />
 
-		<main id="main" class="mx-auto max-w-[2200px]">
+		<main id="main">
 			<!-- Hero -->
 			<section class="px-5 py-16 sm:px-8 md:py-24 lg:px-[50px] lg:py-[96px]">
 				<div class="flex flex-col gap-16 lg:gap-24">
 					<h1
-						class="max-w-[80%] text-[clamp(3rem,9vw,8rem)] leading-none font-medium text-coral"
+						class="text-[clamp(3rem,9vw,8rem)] leading-none font-medium text-coral"
 					>
 						Main message with illustrations design and iconography here
 					</h1>
@@ -48,7 +42,16 @@ const projects = [
 
 			<!-- Projects -->
 			<section id="work" class="flex flex-col">
-				{projects.map((p) => <ProjectCard id={p.id} theme={p.theme} />)}
+				{
+					workProjects.map((p) => (
+						<ProjectCard
+							id={p.id}
+							theme={p.theme}
+							titleLines={p.titleLines}
+							overview={p.overview}
+						/>
+					))
+				}
 			</section>
 
 			<PortfolioFooter reserveChatSpace />
@@ -64,3 +67,10 @@ const projects = [
 		</a>
 	</div>
 </Layout>
+
+<script>
+	import { initProjectImageScroll } from '../scripts/project-image-scroll';
+
+	initProjectImageScroll();
+	document.addEventListener('astro:page-load', initProjectImageScroll);
+</script>

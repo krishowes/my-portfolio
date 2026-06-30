@@ -1,61 +1,265 @@
 ---
-interface Pill {
-	label: string;
-	href?: string;
-	active?: boolean;
-}
+import type { WorkProject } from '../../data/work-projects';
 
 interface Props {
-	pills?: Pill[];
+	projects: WorkProject[];
 }
 
-const {
-	pills = [
-		{ label: 'Primley Park', href: '#project-1' },
-		{ label: 'Opus 4', href: '#project-2' },
-		{ label: 'Fly', href: '#project-3' },
-		{ label: 'G+L', href: '#project-4' },
-		{ label: 'CAAF', active: true },
-		{ label: 'MapleLeaf' },
-		{ label: 'Pack' },
-		{ label: 'Shotgun' },
-		{ label: 'Spike' },
-		{ label: 'JLA' },
-		{ label: 'Firefly' },
-	],
-} = Astro.props;
+const { projects } = Astro.props;
 ---
 
 <nav
 	aria-label="Project navigation"
-	class="pointer-events-none fixed top-1/2 right-4 z-20 hidden -translate-y-1/2 lg:block"
+	class="minimap pointer-events-none fixed top-1/2 z-20 hidden -translate-y-1/2 lg:block"
+	data-minimap
+	data-sections={JSON.stringify(projects.map((p) => p.id))}
 >
-	<div
-		class="pointer-events-auto flex flex-col items-end gap-[3px] rounded-[50px] bg-[rgba(217,217,217,0.5)] p-[3px] backdrop-blur-[7.5px]"
-	>
-		{
-			pills.map((p) => (
-				<a
-					href={p.href ?? '#'}
-					class:list={[
-						'group flex items-center justify-end overflow-hidden rounded-[20px] px-[5px] py-[5px] transition-all duration-300 hover:w-auto hover:px-3',
-						p.active ? 'w-[34px] bg-cream' : 'w-[20px] bg-cocoa-dark',
-					]}
-					aria-label={p.label}
-				>
-					<span
-						class:list={[
-							'max-w-0 overflow-hidden font-mono text-[0.7rem] font-medium tracking-[0.12em] whitespace-nowrap uppercase opacity-0 transition-all duration-300 group-hover:max-w-[180px] group-hover:pr-1 group-hover:opacity-100',
-							p.active ? 'text-cocoa-dark' : 'text-coral',
-						]}
-					>
-						{p.label}
-					</span>
-					<span
-						class:list={['size-2 shrink-0 rounded-full', p.active ? 'bg-cocoa-dark' : 'bg-coral']}
-					></span>
-				</a>
-			))
-		}
+	<div class="minimap__panel pointer-events-auto">
+		<ol class="minimap__list">
+			{
+				projects.map((p, i) => (
+					<li class="minimap__item">
+						<a
+							href={`#${p.id}`}
+							class="minimap__pill"
+							data-minimap-pill
+							data-index={i}
+							data-section={p.id}
+							style="--fill: 0"
+							aria-label={p.label}
+						>
+							<span class="minimap__fill" aria-hidden="true"></span>
+							<span class="minimap__hover" aria-hidden="true"></span>
+							<span class="minimap__label-wrap">
+								<span class="minimap__label-stack" aria-hidden="true">
+									<span class="minimap__label minimap__label--filled">{p.label}</span>
+									<span class="minimap__label minimap__label--empty">{p.label}</span>
+								</span>
+							</span>
+						</a>
+					</li>
+				))
+			}
+		</ol>
 	</div>
 </nav>
+
+<style>
+	.minimap {
+		right: 2rem;
+		font-size: 1rem;
+		--minimap-collapsed-w: 0.55em;
+		--minimap-gap: 0.234375em;
+		--minimap-pad: 0.234375em;
+		--minimap-expanded-max: 15em;
+		--minimap-label-max: 12.5em;
+		--minimap-pill-pad-block: 0.75em;
+		--minimap-pill-pad-inline: 1.25em;
+		--minimap-pill-r: calc(0.5em + var(--minimap-pill-pad-block));
+		--minimap-panel-r: calc(var(--minimap-pad) + var(--minimap-pill-r));
+		--minimap-duration: 0.45s;
+		--minimap-ease: ease;
+		--minimap-fill: #332a2a;
+		--minimap-empty: #f9fdf2;
+	}
+
+	.minimap__panel {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		padding: var(--minimap-pad);
+		border-radius: var(--minimap-panel-r);
+		background: rgba(217, 217, 217, 0.5);
+		backdrop-filter: blur(17px);
+		-webkit-backdrop-filter: blur(17px);
+	}
+
+	.minimap__list {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: var(--minimap-gap);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.minimap__item {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+	}
+
+	.minimap__pill {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		font-size: inherit;
+		line-height: 1;
+		padding-block: var(--minimap-pill-pad-block);
+		padding-inline: 0;
+		width: var(--minimap-collapsed-w);
+		max-width: var(--minimap-collapsed-w);
+		border-radius: var(--minimap-pill-r);
+		overflow: hidden;
+		background: var(--minimap-empty);
+		text-decoration: none;
+		transition:
+			max-width var(--minimap-duration) var(--minimap-ease),
+			width var(--minimap-duration) var(--minimap-ease),
+			padding var(--minimap-duration) var(--minimap-ease);
+	}
+
+	.minimap__panel:hover .minimap__pill,
+	.minimap__panel:focus-within .minimap__pill {
+		width: auto;
+		max-width: var(--minimap-expanded-max);
+		padding-inline: var(--minimap-pill-pad-inline) 1em;
+	}
+
+	/* Dark fill — grows from top; square bottom edge (pill clips outer shape) */
+	.minimap__fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: calc(var(--fill) * 1%);
+		background: var(--minimap-fill);
+		border-radius: 0;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	/* Coral rollover layer */
+	.minimap__hover {
+		position: absolute;
+		inset: 0;
+		background: #fe805f;
+		border-radius: inherit;
+		opacity: 0;
+		transition: opacity 0.25s var(--minimap-ease);
+		pointer-events: none;
+		z-index: 2;
+	}
+
+	.minimap__pill:hover .minimap__hover,
+	.minimap__pill:focus-visible .minimap__hover {
+		opacity: 1;
+	}
+
+	.minimap__label-wrap {
+		position: relative;
+		z-index: 3;
+		display: block;
+		overflow: hidden;
+		max-width: 0;
+		opacity: 0;
+		transition:
+			max-width var(--minimap-duration) var(--minimap-ease),
+			opacity calc(var(--minimap-duration) * 0.85) var(--minimap-ease);
+	}
+
+	.minimap__panel:hover .minimap__label-wrap,
+	.minimap__panel:focus-within .minimap__label-wrap {
+		max-width: var(--minimap-label-max);
+		opacity: 1;
+	}
+
+	.minimap__label-stack {
+		display: grid;
+	}
+
+	.minimap__label {
+		grid-area: 1 / 1;
+		font-family: var(--font-sans);
+		font-size: inherit;
+		font-weight: 500;
+		line-height: 1;
+		letter-spacing: 0.02em;
+		text-transform: none;
+		white-space: nowrap;
+		text-align: right;
+	}
+
+	/* Orange text — masked to the filled (top) region */
+	.minimap__label--filled {
+		color: #fe805f;
+		clip-path: inset(0 0 calc(100% - var(--fill) * 1%) 0);
+	}
+
+	/* Cocoa text — masked to the unfilled (bottom) region */
+	.minimap__label--empty {
+		color: #473c3c;
+		clip-path: inset(calc(var(--fill) * 1%) 0 0 0);
+	}
+
+	/* Rollover: white text above coral layer */
+	.minimap__pill:hover .minimap__label--filled,
+	.minimap__pill:focus-visible .minimap__label--filled,
+	.minimap__pill:hover .minimap__label--empty,
+	.minimap__pill:focus-visible .minimap__label--empty {
+		color: #fff !important;
+		clip-path: none;
+		-webkit-clip-path: none;
+	}
+
+	.minimap__pill:focus-visible {
+		outline: 0.125em solid #fe805f;
+		outline-offset: 0.125em;
+	}
+</style>
+
+<script>
+	function initMiniMap() {
+		const nav = document.querySelector('[data-minimap]');
+		if (!nav) return;
+
+		const sectionIds: string[] = JSON.parse(nav.getAttribute('data-sections') || '[]');
+		const pills = [...nav.querySelectorAll('[data-minimap-pill]')];
+
+		const pairs = sectionIds
+			.map((id, i) => ({
+				pill: pills[i] as HTMLElement | undefined,
+				section: document.getElementById(id),
+			}))
+			.filter((p): p is { pill: HTMLElement; section: HTMLElement } => !!p.pill && !!p.section);
+
+		if (!pairs.length) return;
+
+		const MARKER_RATIO = 0.42;
+
+		function sectionFill(section: HTMLElement): number {
+			const marker = window.innerHeight * MARKER_RATIO;
+			const { top, height } = section.getBoundingClientRect();
+
+			if (top > marker) return 0;
+			if (top + height <= marker) return 100;
+			return ((marker - top) / height) * 100;
+		}
+
+		function updateFills() {
+			for (const { pill, section } of pairs) {
+				const fill = sectionFill(section);
+				pill.style.setProperty('--fill', String(fill));
+			}
+		}
+
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				updateFills();
+				ticking = false;
+			});
+		};
+
+		window.addEventListener('scroll', onScroll, { passive: true });
+		window.addEventListener('resize', onScroll, { passive: true });
+		updateFills();
+	}
+
+	initMiniMap();
+	document.addEventListener('astro:page-load', initMiniMap);
+</script>

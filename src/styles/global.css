@@ -66,11 +66,9 @@
   --spacing-gutter: 6vw;
 }
 
-/* MAST-style page container: capped width + fluid side gutter.
+/* MAST-style page container: fluid side gutter, full viewport width.
    Usage: <div class="container-page"> … </div> */
 @utility container-page {
-  max-width: 90rem;
-  margin-inline: auto;
   padding-inline: var(--spacing-gutter);
 }
 

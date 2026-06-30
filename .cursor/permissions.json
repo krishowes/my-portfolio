@@ -1,0 +1,34 @@
+{
+  "approvalMode": "unrestricted",
+  "terminalAllowlist": [
+    "cursor",
+    "code",
+    "npm",
+    "npx",
+    "node",
+    "git",
+    "astro",
+    "pnpm",
+    "yarn",
+    "rg",
+    "powershell",
+    "pwsh",
+    "npm run dev",
+    "npm run build",
+    "npm run preview"
+  ],
+  "mcpAllowlist": [
+    "*:*"
+  ],
+  "autoRun": {
+    "allow_instructions": [
+      "This is a personal Astro portfolio repo. Dev server, builds, installs, linters, extension installs, and read-only inspection are fine without asking.",
+      "Shell commands that only read files, run tests, or start local dev servers should run automatically.",
+      "MCP tools for Figma and Webflow in this project are trusted."
+    ],
+    "block_instructions": [
+      "Ask before git push, force push, or any destructive delete (rm -rf).",
+      "Ask before editing or committing secrets in .env or credential files."
+    ]
+  }
+}
