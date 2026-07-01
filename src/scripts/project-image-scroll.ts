@@ -1,61 +1,71 @@
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
+const SCALE_START = 1.3;
+const CLIP_START = '30%';
 
-const triggers: ScrollTrigger[] = [];
+let observer: IntersectionObserver | null = null;
+
+/** Remove clip wrapper and all GSAP inline styles — static img only. */
+function lockReveal(frame: HTMLElement) {
+	const clip = frame.querySelector<HTMLElement>('.project-image__clip');
+	const img = clip?.querySelector<HTMLImageElement>('img');
+	if (!clip || !img) {
+		frame.classList.add('is-revealed');
+		return;
+	}
+
+	gsap.killTweensOf([clip, img]);
+	gsap.set([clip, img], { clearProps: 'all' });
+	frame.replaceChildren(img);
+	frame.classList.add('is-revealed');
+	delete frame.dataset.revealing;
+}
+
+function playReveal(frame: HTMLElement) {
+	if (frame.classList.contains('is-revealed') || frame.dataset.revealing === 'true') return;
+
+	const clip = frame.querySelector<HTMLElement>('.project-image__clip');
+	const img = clip?.querySelector<HTMLElement>('img');
+	if (!clip || !img) return;
+
+	frame.dataset.revealing = 'true';
+
+	gsap.set(clip, { width: CLIP_START });
+	gsap.set(img, { scale: SCALE_START, transformOrigin: 'center center' });
+
+	gsap
+		.timeline({ onComplete: () => lockReveal(frame) })
+		.to(clip, { width: '100%', duration: 1.2, ease: 'power4.out' }, 0)
+		.to(img, { scale: 1, duration: 1, ease: 'power4.out' }, 0);
+}
 
 export function initProjectImageScroll() {
-	triggers.forEach((t) => t.kill());
-	triggers.length = 0;
+	observer?.disconnect();
+	observer = null;
 
-	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const frames = [...document.querySelectorAll<HTMLElement>('[data-project-image]')];
 
-	document.querySelectorAll<HTMLElement>('.project-collage-row').forEach((row) => {
-		const frames = [...row.querySelectorAll<HTMLElement>('[data-project-image]')];
-		if (!frames.length) return;
+	if (!frames.length) return;
 
-		frames.forEach((frame, i) => {
-			const inner = frame.querySelector<HTMLElement>('.project-image__inner');
-			if (!inner) return;
+	if (reducedMotion) {
+		frames.forEach(lockReveal);
+		return;
+	}
 
-			// OUTFIT-style: image rises inside a fixed mask (no card fade/slide)
-			const reveal = gsap.fromTo(
-				inner,
-				{ yPercent: 108, scale: 1.08 },
-				{
-					yPercent: 0,
-					scale: 1,
-					ease: 'none',
-					scrollTrigger: {
-						trigger: frame,
-						start: `top bottom-=${i * 48}`,
-						end: 'top 55%',
-						scrub: 0.45,
-					},
-				},
-			);
-			if (reveal.scrollTrigger) triggers.push(reveal.scrollTrigger);
+	observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (!entry.isIntersecting) continue;
+				playReveal(entry.target as HTMLElement);
+				observer?.unobserve(entry.target);
+			}
+		},
+		{ threshold: 0.08, rootMargin: '0px 0px 8% 0px' },
+	);
 
-			// Subtle vertical parallax while the frame travels through the viewport
-			const drift = gsap.fromTo(
-				inner,
-				{ yPercent: 8, scale: 1.06 },
-				{
-					yPercent: -8,
-					scale: 1,
-					ease: 'none',
-					scrollTrigger: {
-						trigger: frame,
-						start: 'top bottom',
-						end: 'bottom top',
-						scrub: 0.85,
-					},
-				},
-			);
-			if (drift.scrollTrigger) triggers.push(drift.scrollTrigger);
-		});
-	});
-
-	ScrollTrigger.refresh();
+	for (const frame of frames) {
+		if (frame.classList.contains('is-revealed')) continue;
+		observer.observe(frame);
+	}
 }

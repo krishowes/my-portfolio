@@ -3,12 +3,14 @@ import '../styles/global.css';
 
 interface Props {
 	title?: string;
+	/** Set false to disable Lenis smooth scroll (e.g. while testing ScrollTrigger on /work). */
+	smoothScroll?: boolean;
 }
 
-const { title = 'Astro Starter' } = Astro.props;
+const { title = 'Astro Starter', smoothScroll = true } = Astro.props;
 ---
 
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -23,7 +25,14 @@ const { title = 'Astro Starter' } = Astro.props;
 		/>
 		<title>{title}</title>
 	</head>
-	<body>
+	<body data-smooth-scroll={smoothScroll ? 'true' : 'false'}>
 		<slot />
 	</body>
 </html>
+
+<script>
+	import { initLenis } from '../scripts/lenis';
+
+	initLenis();
+	document.addEventListener('astro:page-load', initLenis);
+</script>

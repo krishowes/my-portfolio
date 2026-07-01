@@ -7,7 +7,7 @@ import ProjectCard from '../components/home/ProjectCard.astro';
 import { workProjects } from '../data/work-projects';
 ---
 
-<Layout title="Work — Kris Howes">
+<Layout title="Work — Kris Howes" smoothScroll={false}>
 	<div class="min-h-screen bg-page font-sans text-cocoa">
 		<PortfolioNav />
 		<MiniMap projects={workProjects} />

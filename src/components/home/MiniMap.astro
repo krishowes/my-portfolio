@@ -118,7 +118,7 @@ const { projects } = Astro.props;
 		padding-inline: var(--minimap-pill-pad-inline) 1em;
 	}
 
-	/* Dark fill — grows from top; square bottom edge (pill clips outer shape) */
+	/* Dark fill — grows from top; hidden when empty to avoid subpixel sliver */
 	.minimap__fill {
 		position: absolute;
 		top: 0;
@@ -129,6 +129,7 @@ const { projects } = Astro.props;
 		border-radius: 0;
 		pointer-events: none;
 		z-index: 0;
+		opacity: calc(clamp(0, (var(--fill) - 1.5) / 2, 1));
 	}
 
 	/* Coral rollover layer */
@@ -227,15 +228,20 @@ const { projects } = Astro.props;
 
 		if (!pairs.length) return;
 
-		const MARKER_RATIO = 0.42;
+		const MARKER_FALLBACK = 96;
 
 		function sectionFill(section: HTMLElement): number {
-			const marker = window.innerHeight * MARKER_RATIO;
+			const marginTop = parseFloat(getComputedStyle(section).scrollMarginTop);
+			const marker = Number.isFinite(marginTop) && marginTop > 0 ? marginTop : MARKER_FALLBACK;
 			const { top, height } = section.getBoundingClientRect();
 
-			if (top > marker) return 0;
+			if (top > marker || height <= 0) return 0;
 			if (top + height <= marker) return 100;
-			return ((marker - top) / height) * 100;
+
+			const fill = ((marker - top) / height) * 100;
+			if (fill < 2) return 0;
+			if (fill > 98) return 100;
+			return fill;
 		}
 
 		function updateFills() {

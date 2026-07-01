@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
+@import "lenis/dist/lenis.css";
 
 /* ─── MAST design language, ported to Tailwind v4 tokens ──────────────────────
    These @theme variables generate utilities automatically:
