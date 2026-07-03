@@ -1,0 +1,91 @@
+---
+interface Props {
+	label: string;
+	href?: string;
+	/** `md` matches nav sizing; `lg` matches project “More info”. */
+	size?: 'md' | 'lg';
+	class?: string;
+}
+
+const { label, href, size = 'md', class: className, ...rest } = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const tagProps = href ? { href } : { type: 'button' as const };
+---
+
+<Tag class:list={['cta-button', size === 'lg' && 'cta-button--lg', className]} {...tagProps} {...rest}>
+	<span class="cta-button__bg" aria-hidden="true"></span>
+	<span class="cta-button__label">{label}</span>
+</Tag>
+
+<style>
+	.cta-button {
+		--dot-size: 33.5px;
+		--gap: 0.8125rem;
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		min-height: var(--dot-size);
+		/* Left padding reserves space for the resting dot; right padding gives
+		   the label breathing room once the pill has grown behind it. */
+		padding: 0 1.125rem 0 calc(var(--dot-size) + var(--gap));
+		border: 0;
+		background: transparent;
+		border-radius: 999px;
+		cursor: pointer;
+		text-decoration: none;
+		color: inherit;
+		font: inherit;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* The growing element. At rest it's a coral circle sitting on the left.
+	   On hover it expands to the full button width (== text width + padding)
+	   and shifts to cocoa, so the label ends up sitting inside a pill. */
+	.cta-button__bg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: var(--dot-size);
+		border-radius: 999px;
+		background: var(--color-coral, #fe805f);
+		transition:
+			width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 0.4s ease;
+	}
+
+	.cta-button:hover .cta-button__bg,
+	.cta-button:focus-visible .cta-button__bg {
+		width: 100%;
+		background: var(--color-cocoa, #473c3c);
+	}
+
+	.cta-button__label {
+		position: relative;
+		z-index: 1;
+		font-size: clamp(1rem, 1.4vw, 1.5rem);
+		line-height: 1;
+		font-weight: 500;
+		color: var(--color-coral, #fe805f);
+		white-space: nowrap;
+		transition: color 0.4s ease;
+	}
+
+	.cta-button--lg .cta-button__label {
+		font-size: 1.25rem;
+	}
+
+	.cta-button:focus-visible {
+		outline: 2px solid var(--color-coral, #fe805f);
+		outline-offset: 4px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cta-button__bg {
+			transition:
+				width 0.15s ease,
+				background-color 0.15s ease;
+		}
+	}
+</style>

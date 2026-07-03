@@ -264,6 +264,47 @@ const { projects } = Astro.props;
 		window.addEventListener('scroll', onScroll, { passive: true });
 		window.addEventListener('resize', onScroll, { passive: true });
 		updateFills();
+
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		// easeInOutCubic
+		const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+		let animFrame = 0;
+		function smoothScrollTo(section: HTMLElement) {
+			const marginTop = parseFloat(getComputedStyle(section).scrollMarginTop);
+			const offset = Number.isFinite(marginTop) && marginTop > 0 ? marginTop : 0;
+			const startY = window.scrollY;
+			const targetY = Math.max(
+				0,
+				Math.min(
+					section.getBoundingClientRect().top + startY - offset,
+					document.documentElement.scrollHeight - window.innerHeight,
+				),
+			);
+			const distance = targetY - startY;
+			if (Math.abs(distance) < 1) return;
+
+			const duration = Math.min(900, Math.max(400, Math.abs(distance) * 0.5));
+			const startTime = performance.now();
+
+			cancelAnimationFrame(animFrame);
+			const step = (now: number) => {
+				const t = Math.min(1, (now - startTime) / duration);
+				window.scrollTo(0, startY + distance * ease(t));
+				if (t < 1) animFrame = requestAnimationFrame(step);
+			};
+			animFrame = requestAnimationFrame(step);
+		}
+
+		for (const { pill, section } of pairs) {
+			pill.addEventListener('click', (e) => {
+				if (prefersReducedMotion) return; // let native anchor jump handle it
+				e.preventDefault();
+				smoothScrollTo(section);
+				history.replaceState(null, '', `#${section.id}`);
+			});
+		}
 	}
 
 	initMiniMap();

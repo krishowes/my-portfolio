@@ -24,6 +24,10 @@ const { title = 'Astro Starter', smoothScroll = true } = Astro.props;
 			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap"
 		/>
 		<title>{title}</title>
+		<script
+			type="module"
+			src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"
+		></script>
 	</head>
 	<body data-smooth-scroll={smoothScroll ? 'true' : 'false'}>
 		<slot />

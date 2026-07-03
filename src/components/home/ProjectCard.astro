@@ -1,4 +1,8 @@
 ---
+import CtaButton from '../CtaButton.astro';
+import ModelViewer from '../ModelViewer.astro';
+import type { ProjectModel } from '../../data/work-projects';
+
 type Theme = 'dark' | 'paper' | 'yellow' | 'blue';
 
 interface Credit {
@@ -26,6 +30,8 @@ interface Props {
 	whatChanged?: string;
 	credits?: Credit[];
 	detailImage?: string;
+	/** Optional interactive 3D model — replaces collage slot 5 */
+	model?: ProjectModel;
 }
 
 const PLACEHOLDER = '/figma/project.png';
@@ -33,21 +39,16 @@ const PLACEHOLDER = '/figma/project.png';
 const {
 	id,
 	theme = 'paper',
-	titleLines = ['Chapel Allerton Arts Festival', '_All for a good cause'],
-	overview = 'Chapel Allerton Arts Festival is a brand identity and Webflow website project for a local arts and community festival, covering visual identity, print, brand guidelines and event promotion.',
-	quote = '“Kris created a colourful, flexible identity and practical Webflow website that helped the festival present its events more clearly and consistently across digital and print.”',
-	author = '—James Flegg',
+	titleLines = [],
+	overview = '',
+	quote = '',
+	author = '',
 	images = [],
-	brief = 'Chapel Allerton Arts Festival is a brand identity and Webflow website project for a local arts and community festival, covering visual identity, print, brand guidelines and event promotion.',
-	whatChanged = 'I developed a flexible visual system that could work across the website, social posts, posters and event listings. The site was designed to make the programme easy to browse, with a structure that could be updated as new events were added.',
-	credits = [
-		{ role: 'Direction', name: 'Kris Howes' },
-		{ role: 'Copywriting', name: 'Kris Howes' },
-		{ role: 'Photography', name: 'Kris Howes' },
-		{ role: 'Design', name: 'Kris Howes' },
-		{ role: 'Build', name: 'Kris Howes' },
-	],
+	brief = '',
+	whatChanged = '',
+	credits = [],
 	detailImage = PLACEHOLDER,
+	model,
 } = Astro.props;
 
 const detailId = `${id ?? 'project'}-detail`;
@@ -62,6 +63,7 @@ const themes: Record<Theme, { body: string; label: string; copy: string; border:
 };
 
 const t = themes[theme];
+const showModel = model?.enabled === true;
 ---
 
 <article id={id} class:list={['w-full scroll-mt-24', t.body]}>
@@ -118,17 +120,29 @@ const t = themes[theme];
 		<!-- Row 3: 4:3 landscape (cols 1-4) + offset ~2:1 wide flush right (cols 7-12) -->
 		<div class="project-collage-row grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start lg:gap-x-[40px] lg:gap-y-0">
 			{
-				[
-					[5, 'aspect-[4/3] lg:col-span-4'],
-					[6, 'aspect-[41/20] lg:col-span-6 lg:col-start-7'],
-				].map(([index, cls]) => (
-					<div class:list={['project-image', cls]} data-project-image>
+				showModel ? (
+					<div class="lg:col-span-4">
+						<ModelViewer
+							shadedSrc={model.shadedSrc}
+							topoSrc={model.topoSrc}
+							poster={model.poster ?? detailImage}
+							alt={model.alt ?? `Interactive 3D model for ${titleLines[0] ?? 'project'}`}
+							height="clamp(260px, 30vw, 380px)"
+						/>
+					</div>
+				) : (
+					<div class="project-image aspect-[4/3] lg:col-span-4" data-project-image>
 						<div class="project-image__clip">
-							<img src={img(Number(index))} alt="" decoding="async" />
+							<img src={img(5)} alt="" decoding="async" />
 						</div>
 					</div>
-				))
+				)
 			}
+			<div class="project-image aspect-[41/20] lg:col-span-6 lg:col-start-7" data-project-image>
+				<div class="project-image__clip">
+					<img src={img(6)} alt="" decoding="async" />
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -137,28 +151,18 @@ const t = themes[theme];
 		<div class="hidden lg:block" aria-hidden="true"></div>
 		<div class="flex flex-col gap-10 md:flex-row md:gap-12">
 			<div class="flex flex-1 flex-col gap-6">
-				<p class:list={['font-mono text-eyebrow font-medium tracking-[0.18em] uppercase', t.label]}>
+				<p class:list={['text-[clamp(1.05rem,1.3vw,1.35rem)] leading-[1.4] font-medium', t.label]}>
 					overview
 				</p>
 				<p class:list={['text-[clamp(1.5rem,2.6vw,3rem)] leading-[1.3] font-medium', t.copy]}>
 					{overview}
 				</p>
-				<button
-					type="button"
+				<CtaButton
+					label="More info"
+					size="lg"
 					data-detail-open={detailId}
 					aria-haspopup="dialog"
-					class="group inline-flex w-fit cursor-pointer items-center gap-3 text-coral transition-opacity hover:opacity-70"
-				>
-					<span class="size-[33px] rounded-full bg-coral"></span>
-					<span class="text-xl leading-none font-medium">More info</span>
-				</button>
-			</div>
-			<div class="flex flex-col gap-6 md:w-[300px] md:shrink-0">
-				<p class:list={['font-mono text-eyebrow font-medium tracking-[0.18em] uppercase', t.label]}>
-					the client said
-				</p>
-				<p class:list={['text-2xl leading-[1.4] font-medium', t.copy]}>{quote}</p>
-				<p class:list={['text-2xl leading-[1.4] font-medium', t.copy]}>{author}</p>
+				/>
 			</div>
 		</div>
 	</div>
@@ -203,6 +207,15 @@ const t = themes[theme];
 		object-fit: cover;
 		object-position: center;
 	}
+
+	/* SplitText injects the line wrappers/lines at runtime, so they fall
+	   outside Astro's scoped-style hashing — target them via :global.
+	   A touch of bottom padding keeps descenders from being clipped by the
+	   line mask, with a matching negative margin so layout is unchanged. */
+	.detail-quote :global(.detail-quote__line) {
+		padding-bottom: 0.14em;
+		margin-bottom: -0.14em;
+	}
 </style>
 
 <!-- "More info" detail panel: coral X-masked image (left) + dark content (right) -->
@@ -225,6 +238,22 @@ const t = themes[theme];
 			<div class="x-image-mask aspect-square w-[78%] max-w-[520px]">
 				<img src={detailImage} alt="" class="size-full object-cover" />
 			</div>
+
+			<!-- Client testimonial, oversized, overlaying the X mask -->
+			<figure
+				class="detail-quote pointer-events-none absolute inset-0 z-10 flex flex-col justify-center gap-6 px-7 text-left md:px-12 lg:px-14"
+			>
+				<blockquote
+					class="detail-quote__text text-[clamp(1.9rem,4.4vw,4.25rem)] leading-[1.02] font-medium text-cocoa-dark"
+				>
+					{quote}
+				</blockquote>
+				<figcaption
+					class="detail-quote__author text-[clamp(1rem,1.4vw,1.5rem)] leading-none font-medium text-cocoa-dark/80"
+				>
+					{author}
+				</figcaption>
+			</figure>
 		</button>
 
 		<!-- Right: project details -->
@@ -299,6 +328,9 @@ const t = themes[theme];
 
 <script>
 	import gsap from 'gsap';
+	import { SplitText } from 'gsap/SplitText';
+
+	gsap.registerPlugin(SplitText);
 
 	const timelines = new WeakMap<HTMLElement, gsap.core.Timeline>();
 
@@ -320,6 +352,8 @@ const t = themes[theme];
 		const left = overlay.querySelector<HTMLElement>('.detail-left');
 		const right = overlay.querySelector<HTMLElement>('.detail-right');
 		const leftImg = overlay.querySelector<HTMLElement>('.detail-left img');
+		const quoteEl = overlay.querySelector<HTMLElement>('.detail-quote__text');
+		const authorEl = overlay.querySelector<HTMLElement>('.detail-quote__author');
 		const tl = gsap.timeline({
 			paused: true,
 			onReverseComplete() {
@@ -338,6 +372,25 @@ const t = themes[theme];
 		// mask wrapper keeps its size.
 		if (leftImg)
 			tl.from(leftImg, { xPercent: -50, scale: 2, duration: 0.6, ease: 'power3.out' }, 0);
+
+		// Testimonial: split into lines, each masked so it slides up from behind
+		// its own clip box. Starts once the panel has opened enough to read.
+		if (quoteEl) {
+			const split = new SplitText(quoteEl, {
+				type: 'lines',
+				mask: 'lines',
+				linesClass: 'detail-quote__line',
+			});
+			tl.from(
+				split.lines,
+				{ yPercent: 110, duration: 0.7, stagger: 0.09, ease: 'power4.out' },
+				0.35,
+			);
+		}
+		if (authorEl) {
+			tl.from(authorEl, { autoAlpha: 0, y: 24, duration: 0.5, ease: 'power2.out' }, 0.7);
+		}
+
 		timelines.set(overlay, tl);
 		overlay
 			.querySelectorAll<HTMLElement>('[data-detail-close]')

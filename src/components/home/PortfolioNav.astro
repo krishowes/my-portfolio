@@ -1,4 +1,6 @@
 ---
+import CtaButton from '../CtaButton.astro';
+
 interface NavLink {
 	label: string;
 	href: string;
@@ -32,7 +34,7 @@ const {
 
 		<!-- Center glass pill (desktop) -->
 		<div
-			class="hidden items-center gap-8 rounded-[10px] bg-[rgba(217,217,217,0.5)] px-5 py-2 text-cocoa backdrop-blur-[17px] md:flex lg:gap-[41px]"
+			class="hidden items-center gap-8 rounded-[20px] bg-[rgba(217,217,217,0.5)] px-5 py-2 text-cocoa backdrop-blur-[17px] md:flex lg:gap-[41px]"
 		>
 			{
 				links.map((l) => (
@@ -47,14 +49,7 @@ const {
 			}
 		</div>
 
-		<!-- CTA pill -->
-		<a
-			href={cta.href}
-			class="hidden shrink-0 items-center gap-3 rounded-full text-cocoa transition-opacity hover:opacity-70 md:inline-flex"
-		>
-			<span class="size-[33px] rounded-full bg-[#d9d9d9]"></span>
-			<span class="pr-1 text-[clamp(1rem,1.4vw,1.5rem)] leading-none font-medium">{cta.label}</span>
-		</a>
+		<CtaButton href={cta.href} label={cta.label} class="hidden shrink-0 md:inline-flex" />
 
 		<!-- Mobile menu -->
 		<details class="group relative md:hidden">
@@ -79,13 +74,7 @@ const {
 						</a>
 					))
 				}
-				<a
-					href={cta.href}
-					class="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-lg font-medium hover:bg-white/40"
-				>
-					<span class="size-5 rounded-full bg-cocoa"></span>
-					{cta.label}
-				</a>
+				<CtaButton href={cta.href} label={cta.label} class="mt-1 w-full justify-start px-3 py-2" />
 			</div>
 		</details>
 	</nav>
