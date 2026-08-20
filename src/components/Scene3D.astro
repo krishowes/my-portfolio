@@ -1,0 +1,95 @@
+---
+interface Props {
+	/** How much scroll distance the orbit plays out over. 250vh ≈ leisurely, 150vh ≈ quicker. */
+	scrollHeight?: string;
+	class?: string;
+}
+
+const { scrollHeight = '250vh', class: className } = Astro.props;
+---
+
+<section class:list={['scene3d', className]} data-scene3d style={`--scene3d-height: ${scrollHeight}`}>
+	<div class="scene3d__pin">
+		<canvas class="scene3d__canvas" data-scene3d-canvas></canvas>
+		<div class="scene3d__content">
+			<slot />
+		</div>
+	</div>
+</section>
+
+<style>
+	.scene3d {
+		position: relative;
+		height: var(--scene3d-height, 250vh);
+	}
+
+	.scene3d__pin {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		overflow: hidden;
+	}
+
+	.scene3d__canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.scene3d__content {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		pointer-events: none;
+	}
+
+	/* Reduced motion: no scroll runway, no pin — just show the shape at rest. */
+	@media (prefers-reduced-motion: reduce) {
+		.scene3d {
+			height: 100vh;
+		}
+		.scene3d__pin {
+			position: relative;
+		}
+	}
+</style>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { createScrollScene, type ScrollScene } from '../scripts/scene3d';
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	let activeScene: ScrollScene | null = null;
+	let activeTrigger: ScrollTrigger | null = null;
+
+	function initScene3d() {
+		// Tear down any previous instance first (Astro client-side navigation
+		// can re-run this script without a full page reload).
+		activeTrigger?.kill();
+		activeTrigger = null;
+		activeScene?.destroy();
+		activeScene = null;
+
+		const wrap = document.querySelector<HTMLElement>('[data-scene3d]');
+		const canvas = wrap?.querySelector<HTMLCanvasElement>('[data-scene3d-canvas]');
+		if (!wrap || !canvas) return;
+
+		activeScene = createScrollScene(canvas);
+
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+		activeTrigger = ScrollTrigger.create({
+			trigger: wrap,
+			start: 'top top',
+			end: 'bottom bottom',
+			scrub: true,
+			onUpdate: (self) => activeScene?.setProgress(self.progress),
+		});
+	}
+
+	initScene3d();
+	document.addEventListener('astro:page-load', initScene3d);
+</script>
