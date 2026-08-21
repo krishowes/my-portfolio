@@ -16,11 +16,23 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
  * keyframes, geometry, or materials — nothing here needs to change to pick
  * up a new export, as long as the camera is still named "Camera" and still
  * has an action on it.
+ *
+ * Materials are baked, not live: each mesh's lighting/shadows/AO are baked to
+ * a texture in Blender (Cycles, `COMBINED` bake) and wired into both the base
+ * color and the emissive channel, so the shape reads correctly with zero
+ * runtime lights — cheaper, and it lets Blender's path tracer do the soft-
+ * shadow work a real-time light in the browser can't cheaply match. If you
+ * move a light or object in Blender, you need to re-bake and re-export for
+ * the shadow to update — it won't happen live.
  */
 
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MODEL_URL = '/models/hero.glb';
-const DAMPING = 0.08; // 0 = frozen, 1 = snaps instantly to scroll
+// Damping half-life in seconds — how long it takes the camera to close half the
+// gap to the target scroll position. Framerate-independent (see the delta-time
+// lerp below), unlike a flat per-frame factor, which would settle faster on a
+// 144Hz display than a 60Hz one.
+const DAMPING_HALF_LIFE = 0.12;
 
 export interface ScrollScene {
 	/** Feed a 0–1 scroll progress value in (typically from ScrollTrigger's onUpdate). */
@@ -41,13 +53,11 @@ export function createScrollScene(canvas: HTMLCanvasElement): ScrollScene {
 	const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-	// --- lighting (placeholder — swap these out once the real scene's lit) ---
-	const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-	const key = new THREE.DirectionalLight(0xfff4e8, 1.6);
-	key.position.set(4, -6, 6);
-	const rim = new THREE.DirectionalLight(0x5588ff, 1.1); // cool rim, --color-card-blue-ish
-	rim.position.set(-2, 8, 4);
-	scene.add(ambient, key, rim);
+	// --- lighting --------------------------------------------------------------
+	// Deliberately none. Shadows/AO/lighting are baked into each mesh's texture
+	// in Blender (see the emissive-texture note in the file header), so nothing
+	// here needs a runtime light — one less thing computed every frame. If you
+	// switch back to live materials later, re-add lights here.
 
 	// --- resize --------------------------------------------------------------
 	function resize() {
@@ -67,6 +77,7 @@ export function createScrollScene(canvas: HTMLCanvasElement): ScrollScene {
 	let currentProgress = 0;
 	let mixer: THREE.AnimationMixer | null = null;
 	let clipDuration = 0;
+	let loadedRoot: THREE.Object3D | null = null;
 
 	// --- load the Blender export ----------------------------------------------
 	let destroyed = false;
@@ -76,6 +87,7 @@ export function createScrollScene(canvas: HTMLCanvasElement): ScrollScene {
 		(gltf) => {
 			if (destroyed) return;
 
+			loadedRoot = gltf.scene;
 			scene.add(gltf.scene);
 
 			// Prefer a camera actually named "Camera" (Blender's default name);
@@ -120,11 +132,26 @@ export function createScrollScene(canvas: HTMLCanvasElement): ScrollScene {
 
 	// --- render loop -----------------------------------------------------------
 	let frameId = 0;
+	// THREE.Clock is deprecated as of three r181 (aligning with the
+	// requestAnimationFrame timestamp instead) — track delta manually.
+	let lastTime = performance.now();
 
 	function tick() {
 		if (destroyed) return;
 
-		currentProgress += (targetProgress - currentProgress) * (REDUCED_MOTION ? 1 : DAMPING);
+		const now = performance.now();
+		const delta = (now - lastTime) / 1000;
+		lastTime = now;
+
+		if (REDUCED_MOTION) {
+			currentProgress = targetProgress;
+		} else {
+			// Exponential decay toward the target, framerate-independent: the
+			// fraction of the remaining gap closed this frame depends on how much
+			// time actually passed, not on how many frames that took.
+			const decay = 1 - Math.pow(0.5, delta / DAMPING_HALF_LIFE);
+			currentProgress += (targetProgress - currentProgress) * decay;
+		}
 
 		if (mixer && clipDuration > 0) {
 			mixer.setTime(currentProgress * clipDuration);
@@ -143,6 +170,24 @@ export function createScrollScene(canvas: HTMLCanvasElement): ScrollScene {
 			destroyed = true;
 			cancelAnimationFrame(frameId);
 			resizeObserver.disconnect();
+
+			mixer?.stopAllAction();
+			if (loadedRoot) {
+				mixer?.uncacheRoot(loadedRoot);
+				loadedRoot.traverse((obj) => {
+					const mesh = obj as THREE.Mesh;
+					if (!mesh.isMesh) return;
+					mesh.geometry?.dispose();
+					const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+					for (const material of materials) {
+						for (const key of ['map', 'emissiveMap', 'roughnessMap', 'metalnessMap', 'normalMap', 'aoMap'] as const) {
+							(material as any)[key]?.dispose?.();
+						}
+						material.dispose();
+					}
+				});
+			}
+
 			renderer.dispose();
 		},
 	};
